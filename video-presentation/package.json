@@ -1,0 +1,27 @@
+{
+  "name": "video-presentation",
+  "version": "1.0.0",
+  "description": "AuraFlow AI - Professional chatbot presentation video",
+  "scripts": {
+    "start": "remotion studio",
+    "build": "remotion render ChatbotPresentation out/video.mp4",
+    "render": "remotion render ChatbotPresentation out/video.mp4",
+    "preview": "remotion studio"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.290",
+    "@remotion/gif": "4.0.290",
+    "@remotion/media-utils": "4.0.290",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "remotion": "4.0.290"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
+    "typescript": "5.4.5"
+  },
+  "remotion": {
+    "entryPoint": "src/index.ts"
+  }
+}
