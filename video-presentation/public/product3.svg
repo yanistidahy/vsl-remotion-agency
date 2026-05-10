@@ -1,0 +1,11 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='700' height='700' viewBox='0 0 700 700'>
+  <rect width='700' height='700' fill='#ffffff'/>
+  <rect x='280' y='190' width='140' height='330' rx='24' fill='#e8e4f0'/>
+  <rect x='296' y='170' width='108' height='38' rx='8' fill='#d8d0ee'/>
+  <rect x='312' y='156' width='76' height='22' rx='4' fill='#7c3aed'/>
+  <rect x='287' y='250' width='126' height='2' fill='#7c3aed' opacity='0.3'/>
+  <text x='350' y='360' font-family='Georgia' font-size='22' fill='#5b21b6' text-anchor='middle' font-weight='700'>ALGAÉE</text>
+  <text x='350' y='383' font-family='Arial' font-size='12' fill='#7c3aed' text-anchor='middle' font-weight='600'>N°03 DÉMÊLE</text>
+  <text x='350' y='402' font-family='Arial' font-size='10' fill='#9d6fe8' text-anchor='middle'>Après-shampooing</text>
+  <ellipse cx='350' cy='525' rx='62' ry='10' fill='#d8d0ee' opacity='0.4'/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='700' height='700' viewBox='0 0 700 700'>
+  <rect width='700' height='700' fill='#ffffff'/>
+  <rect x='270' y='200' width='160' height='320' rx='22' fill='#e8f4f1'/>
+  <rect x='290' y='180' width='120' height='38' rx='8' fill='#d0ebe5'/>
+  <rect x='308' y='166' width='84' height='22' rx='4' fill='#4a9b8e'/>
+  <rect x='285' y='255' width='130' height='2' fill='#4a9b8e' opacity='0.4'/>
+  <text x='350' y='360' font-family='Georgia' font-size='24' fill='#2d7a6e' text-anchor='middle' font-weight='700'>ALGAÉE</text>
+  <text x='350' y='385' font-family='Arial' font-size='13' fill='#4a9b8e' text-anchor='middle' font-weight='600'>N°01 NETTOIE</text>
+  <text x='350' y='406' font-family='Arial' font-size='10' fill='#7ab5ae' text-anchor='middle'>Shampooing</text>
+  <ellipse cx='350' cy='522' rx='65' ry='10' fill='#d0ebe5' opacity='0.4'/>
+</svg>

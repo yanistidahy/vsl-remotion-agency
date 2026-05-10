@@ -1,0 +1,11 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='700' height='700' viewBox='0 0 700 700'>
+  <rect width='700' height='700' fill='#ffffff'/>
+  <ellipse cx='350' cy='400' rx='130' ry='100' fill='#fce8d5'/>
+  <rect x='220' y='310' width='260' height='90' rx='8' fill='#f5d5b8'/>
+  <ellipse cx='350' cy='310' rx='130' ry='28' fill='#edd4b8'/>
+  <ellipse cx='350' cy='310' rx='100' ry='20' fill='#e8c8a0'/>
+  <text x='350' y='375' font-family='Georgia' font-size='22' fill='#8b5e3c' text-anchor='middle' font-weight='700'>ALGAÉE</text>
+  <text x='350' y='398' font-family='Arial' font-size='12' fill='#a0704a' text-anchor='middle' font-weight='600'>N°02 NOURRIT</text>
+  <text x='350' y='416' font-family='Arial' font-size='10' fill='#c49070' text-anchor='middle'>Masque</text>
+  <ellipse cx='350' cy='502' rx='100' ry='12' fill='#f5d5b8' opacity='0.4'/>
+</svg>

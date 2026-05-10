@@ -1,0 +1,10 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='700' height='700' viewBox='0 0 700 700'>
+  <rect width='700' height='700' fill='#f9f5f0'/>
+  <rect x='280' y='180' width='140' height='300' rx='20' fill='#d4c5a9'/>
+  <rect x='295' y='160' width='110' height='40' rx='8' fill='#c4b599'/>
+  <rect x='310' y='148' width='80' height='22' rx='4' fill='#b8a88a'/>
+  <rect x='290' y='230' width='120' height='3' fill='#b8a88a' opacity='0.5'/>
+  <text x='350' y='345' font-family='Georgia' font-size='22' fill='#6b5c45' text-anchor='middle' font-weight='700'>ALGAÉE</text>
+  <text x='350' y='370' font-family='Arial' font-size='12' fill='#8a7560' text-anchor='middle'>N°01</text>
+  <ellipse cx='350' cy='480' rx='60' ry='10' fill='#c4b599' opacity='0.3'/>
+</svg>

@@ -13,7 +13,6 @@ export const ChatBubbleWidget: React.FC<ChatBubbleWidgetProps> = ({
 }) => {
   const frame = useCurrentFrame();
 
-  // Pulse ring animation
   const pulseScale = interpolate((frame * 2) % 60, [0, 30, 60], [1, 1.5, 1]);
   const pulseOpacity = interpolate((frame * 2) % 60, [0, 15, 30, 60], [0.6, 0.3, 0, 0]);
 
@@ -23,28 +22,37 @@ export const ChatBubbleWidget: React.FC<ChatBubbleWidgetProps> = ({
   });
 
   return (
-    <div style={{ position: "relative", display: "inline-flex", alignItems: "flex-end", flexDirection: "column", gap: 10 }}>
+    <div
+      style={{
+        position: "relative",
+        display: "inline-flex",
+        alignItems: "flex-end",
+        flexDirection: "column",
+        gap: 10,
+      }}
+    >
       {/* Tooltip */}
       {showTooltip && (
         <div
           style={{
             background: "#fff",
-            borderRadius: 12,
-            padding: "8px 14px",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-            fontSize: 13,
+            borderRadius: 10,
+            padding: "7px 12px",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
+            fontSize: 11,
             color: COLORS.text,
             fontFamily: "'Helvetica Neue', Arial, sans-serif",
             fontWeight: 500,
             opacity: tooltipOpacity,
             whiteSpace: "nowrap",
+            border: "1px solid #f0f0f0",
           }}
         >
-          Besoin d'aide ? 👋
+          Un conseil ? 💬
         </div>
       )}
 
-      {/* Bubble container */}
+      {/* Bubble */}
       <div style={{ position: "relative" }}>
         {/* Pulse ring */}
         <div
