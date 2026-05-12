@@ -4,6 +4,7 @@ import { C, FONT } from "../constants";
 import { CounterAnimation } from "./CounterAnimation";
 
 const SPRING = { damping: 16, stiffness: 280, mass: 0.8 };
+const SPRING_TRANS = { damping: 22, stiffness: 350, mass: 0.7 };
 const TRANS = 10;
 
 const FEATURES = [
@@ -37,8 +38,23 @@ export const FeaturesScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
+  // ENTER from right: slide + scale + skew + blur
   const slideIn = interpolate(frame, [0, TRANS], [1920, 0], { extrapolateRight: "clamp" });
+  const scaleIn = spring({ fps, frame: Math.max(0, frame), config: SPRING_TRANS, from: 1.08, to: 1.0 });
+  const skewIn = interpolate(frame, [0, TRANS], [-5, 0], { extrapolateRight: "clamp" });
+  const blurIn = interpolate(frame, [0, Math.min(TRANS, 5)], [10, 0], { extrapolateRight: "clamp" });
+
+  // EXIT to left: slide + scale + skew + blur
   const slideOut = interpolate(frame, [durationInFrames - TRANS, durationInFrames], [0, -1920], {
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+  const scaleOut = interpolate(frame, [durationInFrames - TRANS, durationInFrames], [1, 0.92], {
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+  const skewOut = interpolate(frame, [durationInFrames - TRANS, durationInFrames], [0, 4], {
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+  const blurOut = interpolate(frame, [durationInFrames - TRANS, durationInFrames], [0, 10], {
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
   const fadeOut = interpolate(frame, [durationInFrames - TRANS, durationInFrames], [1, 0], {
@@ -58,7 +74,10 @@ export const FeaturesScene: React.FC = () => {
     <AbsoluteFill
       style={{
         background: `radial-gradient(ellipse 120% 80% at 50% 110%, #0f0920 0%, #0a0a0f 55%)`,
-        transform: `translateX(${isOut ? slideOut : slideIn}px)`,
+        transform: isOut
+          ? `translateX(${slideOut}px) scale(${scaleOut}) skewX(${skewOut}deg)`
+          : `translateX(${slideIn}px) scale(${scaleIn}) skewX(${skewIn}deg)`,
+        filter: isOut ? `blur(${blurOut}px)` : `blur(${blurIn}px)`,
         opacity: fadeOut,
       }}
     >

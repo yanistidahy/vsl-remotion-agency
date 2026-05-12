@@ -5,14 +5,19 @@ import { AuraLogo } from "./AuraLogo";
 import { ParticleEffect } from "./ParticleEffect";
 
 const SPRING = { damping: 16, stiffness: 280, mass: 0.8 };
+const SPRING_TRANS = { damping: 22, stiffness: 350, mass: 0.7 };
 const TRANS = 10;
 
 export const OutroScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
-  // Slide IN from right
+  // ENTER from right: slide + scale + skew + blur
   const slideIn = interpolate(frame, [0, TRANS], [1920, 0], { extrapolateRight: "clamp" });
+  const scaleIn = spring({ fps, frame: Math.max(0, frame), config: SPRING_TRANS, from: 1.08, to: 1.0 });
+  const skewIn = interpolate(frame, [0, TRANS], [-5, 0], { extrapolateRight: "clamp" });
+  const blurIn = interpolate(frame, [0, Math.min(TRANS, 5)], [10, 0], { extrapolateRight: "clamp" });
+
   // Fade to pure black last 40 frames (no slide-out — it's the finale)
   const fadeOut = interpolate(frame, [durationInFrames - 40, durationInFrames], [1, 0], {
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
@@ -50,7 +55,8 @@ export const OutroScene: React.FC = () => {
     <AbsoluteFill
       style={{
         background: `linear-gradient(160deg, #18063a 0%, #0d0520 35%, #0a0a0f 60%, #0f0823 100%)`,
-        transform: `translateX(${slideIn}px)`,
+        transform: `translateX(${slideIn}px) scale(${scaleIn}) skewX(${skewIn}deg)`,
+        filter: `blur(${blurIn}px)`,
         opacity: fadeOut,
       }}
     >
