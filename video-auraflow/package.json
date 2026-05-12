@@ -1,0 +1,27 @@
+{
+  "name": "video-auraflow",
+  "version": "0.0.1",
+  "description": "AuraFlow AI Presentation Video",
+  "keywords": ["remotion"],
+  "scripts": {
+    "start": "remotion studio",
+    "build": "remotion render AuraFlowVideo out/video.mp4",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.290",
+    "@remotion/media-utils": "4.0.290",
+    "remotion": "4.0.290",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
+    "typescript": "^5.0.0"
+  },
+  "remotion": {
+    "entryPoint": "src/index.ts"
+  },
+  "license": "MIT"
+}
