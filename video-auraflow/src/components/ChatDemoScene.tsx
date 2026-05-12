@@ -13,20 +13,21 @@ import { ChatWidget } from "./ChatWidget";
 import { KeyboardTyping } from "./KeyboardTyping";
 
 const SPRING = { damping: 16, stiffness: 280, mass: 0.8 };
+const SPRING_TRANS = { damping: 22, stiffness: 350, mass: 0.7 };
 const TRANS = 10;
 
 const TYPING_TEXT = "j'ai les cheveux secs et frisés";
-const FPC = 4;
+const FPC = 3; // frames per char (plus rapide)
 const CHARS = TYPING_TEXT.length; // 31
 
-const BOT_MSG1_START = 30;
-const USER_TYPE_START = 90;
-const USER_TYPE_END = USER_TYPE_START + CHARS * FPC; // 214
-const USER_SEND = USER_TYPE_END + 4; // 218
-const BOT_TYPING_START = USER_SEND + 10; // 228
-const BOT_MSG2_START = 242;
-const PRODUCT_START = 340;
-const KEYBOARD_HIDE = USER_SEND + 18; // 236
+const BOT_MSG1_START = 20;
+const USER_TYPE_START = 60;
+const USER_TYPE_END = USER_TYPE_START + CHARS * FPC; // 153
+const USER_SEND = USER_TYPE_END + 4; // 157
+const BOT_TYPING_START = USER_SEND + 8; // 165
+const BOT_MSG2_START = 175;
+const PRODUCT_START = 280;
+const KEYBOARD_HIDE = USER_SEND + 15; // 172
 
 const AZERTY_MAP: Record<string, string> = {
   a: "A",

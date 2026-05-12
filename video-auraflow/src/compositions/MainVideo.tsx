@@ -6,33 +6,15 @@ import { ChatDemoScene } from "../components/ChatDemoScene";
 import { FeaturesScene } from "../components/FeaturesScene";
 import { OutroScene } from "../components/OutroScene";
 
-// Push-slide transition: scene N slides left, scene N+1 enters from right.
-// 10-frame overlap = 0.167s at 60fps — fast, professional cut.
-
 const TRANS = 10;
 
 export const MainVideo: React.FC = () => (
   <AbsoluteFill>
     <Audio src={staticFile("music.mp3")} volume={0.26} />
-
-    <Sequence from={0} durationInFrames={360 + TRANS}>
-      <HeroScene />
-    </Sequence>
-
-    <Sequence from={360} durationInFrames={360 + TRANS}>
-      <ProblemScene />
-    </Sequence>
-
-    <Sequence from={720} durationInFrames={1380 + TRANS}>
-      <ChatDemoScene />
-    </Sequence>
-
-    <Sequence from={2100} durationInFrames={540 + TRANS}>
-      <FeaturesScene />
-    </Sequence>
-
-    <Sequence from={2640} durationInFrames={360}>
-      <OutroScene />
-    </Sequence>
+    <Sequence from={0} durationInFrames={310}><HeroScene /></Sequence>
+    <Sequence from={300} durationInFrames={250}><ProblemScene /></Sequence>
+    <Sequence from={540} durationInFrames={850}><ChatDemoScene /></Sequence>
+    <Sequence from={1380} durationInFrames={370}><FeaturesScene /></Sequence>
+    <Sequence from={1750} durationInFrames={300}><OutroScene /></Sequence>
   </AbsoluteFill>
 );

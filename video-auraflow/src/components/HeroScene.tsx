@@ -5,6 +5,7 @@ import { AuraLogo } from "./AuraLogo";
 import { ParticleEffect } from "./ParticleEffect";
 
 const SPRING = { damping: 16, stiffness: 280, mass: 0.8 };
+const SPRING_TRANS = { damping: 22, stiffness: 350, mass: 0.7 };
 const TRANS = 10;
 
 const taglineWords = "L'assistant IA qui vend pour vous".split(" ");
@@ -13,11 +14,29 @@ export const HeroScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
-  // Slide OUT left + fade over last TRANS frames
+  // EXIT: slide + scale + skew + blur over last TRANS frames
   const slideOut = interpolate(
     frame,
     [durationInFrames - TRANS, durationInFrames],
     [0, -1920],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+  const scaleOut = interpolate(
+    frame,
+    [durationInFrames - TRANS, durationInFrames],
+    [1, 0.92],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+  const skewOut = interpolate(
+    frame,
+    [durationInFrames - TRANS, durationInFrames],
+    [0, 4],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+  const blurOut = interpolate(
+    frame,
+    [durationInFrames - TRANS, durationInFrames],
+    [0, 10],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
   const fadeOut = interpolate(
@@ -49,7 +68,8 @@ export const HeroScene: React.FC = () => {
     <AbsoluteFill
       style={{
         background: "#0a0a0f",
-        transform: `translateX(${slideOut}px)`,
+        transform: `translateX(${slideOut}px) scale(${scaleOut}) skewX(${skewOut}deg)`,
+        filter: `blur(${blurOut}px)`,
         opacity: fadeOut,
       }}
     >
