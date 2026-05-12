@@ -1,0 +1,144 @@
+<svg width="300" height="420" viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"  stop-color="#5C3310" stop-opacity="0.85"/>
+      <stop offset="18%" stop-color="#A8682A" stop-opacity="0.9"/>
+      <stop offset="45%" stop-color="#D4894E" stop-opacity="0.95"/>
+      <stop offset="75%" stop-color="#A05A20" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#5C3310" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="glassHL" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="white" stop-opacity="0.35"/>
+      <stop offset="35%" stop-color="white" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="neckGlass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"  stop-color="#5C3310" stop-opacity="0.8"/>
+      <stop offset="30%" stop-color="#C07830" stop-opacity="0.9"/>
+      <stop offset="70%" stop-color="#A05020" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#5C3310" stop-opacity="0.75"/>
+    </linearGradient>
+    <linearGradient id="label" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#130826"/>
+      <stop offset="100%" stop-color="#1e1040"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#F7E07A"/>
+      <stop offset="40%"  stop-color="#D4A820"/>
+      <stop offset="100%" stop-color="#9A7000"/>
+    </linearGradient>
+    <linearGradient id="capGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#E8CE60"/>
+      <stop offset="50%"  stop-color="#B8920E"/>
+      <stop offset="100%" stop-color="#856800"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#00000055"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="bottomShine" cx="50%" cy="0%" r="100%">
+      <stop offset="0%" stop-color="#D4894E" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#5C3310" stop-opacity="0.1"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Floor shadow -->
+  <ellipse cx="150" cy="410" rx="72" ry="11" fill="#00000030"/>
+
+  <g filter="url(#shadow)">
+    <!-- BOTTLE BODY -->
+    <path d="M88 118 C88 115 92 112 96 112 L204 112 C208 112 212 115 212 118 L212 368 C212 375 207 380 200 380 L100 380 C93 380 88 375 88 368 Z" fill="url(#glass)"/>
+    <!-- Glass highlight strip left -->
+    <path d="M91 118 L91 370 C91 375 94 378 98 378 L114 378 L118 112 L96 112 C93 112 91 114 91 118 Z" fill="url(#glassHL)" opacity="0.7"/>
+    <!-- Right edge gleam -->
+    <rect x="207" y="120" width="4" height="248" rx="2" fill="white" opacity="0.07"/>
+    <!-- Bottom shine -->
+    <ellipse cx="150" cy="370" rx="60" ry="8" fill="url(#bottomShine)"/>
+
+    <!-- NECK -->
+    <rect x="118" y="76" width="64" height="40" rx="9" fill="url(#neckGlass)"/>
+    <rect x="120" y="76" width="14" height="40" rx="5" fill="white" opacity="0.18"/>
+
+    <!-- GOLD RING (neck base) -->
+    <rect x="113" y="111" width="74" height="8" rx="2" fill="url(#gold)"/>
+    <rect x="115" y="112" width="70" height="3" rx="1" fill="white" opacity="0.25"/>
+
+    <!-- GOLD COLLAR (neck top) -->
+    <rect x="113" y="73" width="74" height="7" rx="2" fill="url(#capGrad)"/>
+
+    <!-- DROPPER CAP -->
+    <rect x="128" y="18" width="44" height="58" rx="7" fill="url(#capGrad)"/>
+    <!-- Cap highlight -->
+    <rect x="130" y="20" width="12" height="54" rx="4" fill="white" opacity="0.18"/>
+    <!-- Cap edge lines -->
+    <rect x="128" y="44" width="44" height="1.5" fill="white" opacity="0.12"/>
+    <rect x="128" y="56" width="44" height="1.5" fill="white" opacity="0.10"/>
+
+    <!-- RUBBER BULB -->
+    <ellipse cx="150" cy="16" rx="20" ry="13" fill="#2a2a2a"/>
+    <ellipse cx="150" cy="16" rx="20" ry="13" fill="none" stroke="white" stroke-width="0.5" opacity="0.15"/>
+    <!-- Bulb highlight -->
+    <ellipse cx="142" cy="11" rx="6" ry="4" fill="white" opacity="0.15"/>
+    <!-- Dropper tip -->
+    <rect x="147" y="74" width="6" height="12" rx="3" fill="url(#capGrad)" opacity="0.7"/>
+
+    <!-- LABEL -->
+    <rect x="90" y="152" width="120" height="200" rx="3" fill="url(#label)"/>
+    <!-- Gold border outer -->
+    <rect x="92" y="154" width="116" height="196" rx="2" fill="none" stroke="#D4A820" stroke-width="0.8" opacity="0.7"/>
+    <!-- Gold border inner -->
+    <rect x="95" y="157" width="110" height="190" rx="1" fill="none" stroke="#D4A820" stroke-width="0.3" opacity="0.4"/>
+
+    <!-- Top decorative line -->
+    <line x1="103" y1="167" x2="197" y2="167" stroke="#D4A820" stroke-width="0.6" opacity="0.6"/>
+    <line x1="108" y1="170" x2="192" y2="170" stroke="#D4A820" stroke-width="0.3" opacity="0.35"/>
+
+    <!-- BRAND -->
+    <text x="150" y="185" text-anchor="middle"
+      font-family="Georgia,serif" font-size="8" font-weight="bold"
+      fill="#D4A820" letter-spacing="4">NATURE &amp; SOI</text>
+
+    <!-- Thin separator -->
+    <line x1="115" y1="191" x2="185" y2="191" stroke="#D4A820" stroke-width="0.4" opacity="0.5"/>
+
+    <!-- PRODUCT NAME -->
+    <text x="150" y="209" text-anchor="middle"
+      font-family="'Helvetica Neue',Arial,sans-serif" font-size="16"
+      font-weight="900" fill="white" letter-spacing="0.5">HUILE</text>
+    <text x="150" y="228" text-anchor="middle"
+      font-family="'Helvetica Neue',Arial,sans-serif" font-size="16"
+      font-weight="900" fill="white" letter-spacing="0.5">BAOBAB</text>
+
+    <!-- BIO badge -->
+    <rect x="128" y="233" width="44" height="14" rx="7" fill="#D4A820" opacity="0.15"/>
+    <rect x="129" y="234" width="42" height="12" rx="6" fill="none" stroke="#D4A820" stroke-width="0.7" opacity="0.7"/>
+    <text x="150" y="244" text-anchor="middle"
+      font-family="'Helvetica Neue',Arial,sans-serif" font-size="7.5"
+      font-weight="700" fill="#D4A820" letter-spacing="2.5">BIO</text>
+
+    <!-- Leaf motif -->
+    <g transform="translate(150,264)" filter="url(#glow)">
+      <path d="M0-10 C6-8 10 0 6 8 C2 12-4 10-6 6 C-10 0-6-8 0-10Z"
+        fill="#4ade80" opacity="0.85"/>
+      <path d="M0-10 L0 10" stroke="#2d7a4a" stroke-width="0.8" opacity="0.7"/>
+      <path d="M-4 0 C0-2 4 0 6 4" stroke="#2d7a4a" stroke-width="0.5" fill="none" opacity="0.5"/>
+    </g>
+
+    <!-- Tagline -->
+    <text x="150" y="286" text-anchor="middle"
+      font-family="Georgia,serif" font-size="7.5" font-style="italic"
+      fill="rgba(255,255,255,0.4)" letter-spacing="0.5">Nutrition intense &amp; anti-frisottis</text>
+
+    <!-- Volume -->
+    <text x="150" y="316" text-anchor="middle"
+      font-family="'Helvetica Neue',Arial,sans-serif" font-size="9"
+      fill="rgba(255,255,255,0.35)" letter-spacing="2">250 ml</text>
+
+    <!-- Bottom decorative lines -->
+    <line x1="108" y1="326" x2="192" y2="326" stroke="#D4A820" stroke-width="0.3" opacity="0.35"/>
+    <line x1="103" y1="329" x2="197" y2="329" stroke="#D4A820" stroke-width="0.6" opacity="0.5"/>
+  </g>
+</svg>

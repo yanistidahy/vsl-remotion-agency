@@ -8,20 +8,21 @@ export const OutroScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
+  // Slide IN from right
+  const slideIn = interpolate(frame, [0, 22], [1920, 0], { extrapolateRight: "clamp" });
   const fadeIn = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
-  // Fade to black last 40 frames
+  // Fade to pure black last 40 frames (no slide-out — it's the finale)
   const fadeOut = interpolate(frame, [durationInFrames - 40, durationInFrames], [1, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
 
   const h1Op = interpolate(frame, [22, 42], [0, 1], { extrapolateRight: "clamp" });
   const h1Y = spring({ fps, frame: Math.max(0, frame - 22), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 30, to: 0 });
 
+  const ctaScale = spring({ fps, frame: Math.max(0, frame - 46), config: { damping: 14, stiffness: 280, mass: 0.8 }, from: 0.82, to: 1 });
   const ctaOp = interpolate(frame, [46, 66], [0, 1], { extrapolateRight: "clamp" });
-  const ctaScale = spring({ fps, frame: Math.max(0, frame - 46), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 0.85, to: 1 });
 
-  const urlOp = interpolate(frame, [72, 90], [0, 1], { extrapolateRight: "clamp" });
+  const urlOp = interpolate(frame, [74, 92], [0, 1], { extrapolateRight: "clamp" });
 
   const glowPulse = 0.5 + 0.5 * Math.sin(frame / 25);
 
@@ -29,10 +30,11 @@ export const OutroScene: React.FC = () => {
     <AbsoluteFill
       style={{
         background: `linear-gradient(145deg, #1a0533 0%, #0f0823 30%, ${C.dark} 60%, #0d0520 100%)`,
-        opacity: fadeIn * fadeOut,
+        transform: `translateX(${slideIn}px)`,
+        opacity: Math.min(fadeIn, fadeOut),
       }}
     >
-      {/* Radial halo */}
+      {/* Halo */}
       <div
         style={{
           position: "absolute",
@@ -56,15 +58,12 @@ export const OutroScene: React.FC = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: 0,
         }}
       >
-        {/* Logo — springs in */}
         <div style={{ marginBottom: 40 }}>
           <AuraLogo size={160} showWordmark={false} startFrame={0} />
         </div>
 
-        {/* H1 */}
         <div
           style={{
             opacity: h1Op,
@@ -75,7 +74,7 @@ export const OutroScene: React.FC = () => {
         >
           <span
             style={{
-              fontSize: 56,
+              fontSize: 58,
               fontWeight: 900,
               color: "#fff",
               fontFamily: FONT.sans,
@@ -87,7 +86,7 @@ export const OutroScene: React.FC = () => {
           </span>
           <span
             style={{
-              fontSize: 56,
+              fontSize: 58,
               fontWeight: 900,
               background: `linear-gradient(90deg, ${C.accent}, #c4b5fd)`,
               WebkitBackgroundClip: "text",
@@ -107,33 +106,32 @@ export const OutroScene: React.FC = () => {
             fontSize: 20,
             color: "rgba(255,255,255,0.4)",
             fontFamily: FONT.sans,
-            marginBottom: 52,
+            marginBottom: 56,
+            textAlign: "center",
           }}
         >
           Augmentez vos ventes dès aujourd'hui
         </div>
 
-        {/* CTA button */}
         <div
           style={{
             opacity: ctaOp,
             transform: `scale(${ctaScale})`,
             background: C.gradient,
             borderRadius: 60,
-            padding: "22px 64px",
-            fontSize: 22,
+            padding: "22px 68px",
+            fontSize: 24,
             fontWeight: 800,
             color: "#fff",
             fontFamily: FONT.sans,
             letterSpacing: "-0.2px",
-            boxShadow: `0 14px 56px rgba(124,58,237,0.55)`,
-            marginBottom: 52,
+            boxShadow: `0 16px 60px rgba(124,58,237,0.6)`,
+            marginBottom: 56,
           }}
         >
           Commencer maintenant →
         </div>
 
-        {/* URL */}
         <div
           style={{
             opacity: urlOp,

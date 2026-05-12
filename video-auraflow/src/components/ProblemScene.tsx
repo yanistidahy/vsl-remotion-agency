@@ -3,55 +3,79 @@ import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } fr
 import { C, FONT } from "../constants";
 
 const PROBLEMS = [
-  { icon: "😴", text: "Votre site dort la nuit" },
-  { icon: "❓", text: "Clients sans réponse" },
-  { icon: "💸", text: "Ventes perdues" },
+  {
+    icon: "😴",
+    title: "Vous dormez,\nils partent",
+    desc: "60 % des achats sont abandonnés la nuit sans support disponible",
+    color: C.red,
+    bg: "rgba(239,68,68,0.08)",
+    border: "rgba(239,68,68,0.25)",
+    accent: "#fca5a5",
+  },
+  {
+    icon: "🔁",
+    title: "Questions\nrépétitives",
+    desc: "Votre équipe répond 50× par jour aux mêmes questions",
+    color: C.gold,
+    bg: "rgba(245,158,11,0.08)",
+    border: "rgba(245,158,11,0.25)",
+    accent: "#fcd34d",
+  },
+  {
+    icon: "📉",
+    title: "Taux de\nconversion faible",
+    desc: "Seulement 2 % des visiteurs achètent sans aide personnalisée",
+    color: "#f97316",
+    bg: "rgba(249,115,22,0.08)",
+    border: "rgba(249,115,22,0.25)",
+    accent: "#fdba74",
+  },
 ];
 
 export const ProblemScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
+  // Slide IN from right edge
+  const slideX = interpolate(frame, [0, 22], [1920, 0], { extrapolateRight: "clamp" });
   const fadeIn = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
-  const fadeOut = interpolate(frame, [durationInFrames - 20, durationInFrames], [1, 0], {
+  // Slide OUT to left
+  const slideOutX = interpolate(frame, [durationInFrames - 22, durationInFrames], [0, -1920], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const fadeOut = interpolate(frame, [durationInFrames - 22, durationInFrames], [1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  // Left side slides from left
-  const leftX = spring({ fps, frame, config: { damping: 18, stiffness: 260, mass: 0.9 }, from: -80, to: 0 });
-  const leftOp = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
-
-  // Right side slides from right after frame 160
-  const rightX = spring({ fps, frame: Math.max(0, frame - 160), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 80, to: 0 });
-  const rightOp = interpolate(frame, [160, 180], [0, 1], { extrapolateRight: "clamp" });
-
-  // Chat bubble pulse (loop every 80 frames)
-  const pulsePhase = (frame % 80) / 80;
-  const chatScale = 1 + 0.03 * Math.sin(pulsePhase * Math.PI * 2);
+  const titleY = spring({ fps, frame, config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 30, to: 0 });
+  const titleOp = interpolate(frame, [0, 20], [0, 1], { extrapolateRight: "clamp" });
 
   return (
     <AbsoluteFill
       style={{
-        background: `linear-gradient(135deg, #0d0520 0%, ${C.dark} 60%, #050312 100%)`,
-        opacity: fadeIn * fadeOut,
+        background: `radial-gradient(ellipse 110% 80% at 50% 0%, #1a0520 0%, ${C.dark} 65%)`,
+        transform: `translateX(${frame < durationInFrames - 22 ? slideX : slideOutX}px)`,
+        opacity: Math.min(fadeIn, fadeOut),
       }}
     >
       <AbsoluteFill
         style={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
-          padding: "0 120px",
-          gap: 0,
+          justifyContent: "center",
+          padding: "0 100px",
         }}
       >
-        {/* LEFT: problems */}
+        {/* Header */}
         <div
           style={{
-            flex: 1,
-            transform: `translateX(${leftX}px)`,
-            opacity: leftOp,
-            paddingRight: 80,
+            opacity: titleOp,
+            transform: `translateY(${titleY}px)`,
+            textAlign: "center",
+            marginBottom: 56,
           }}
         >
           <div
@@ -59,157 +83,107 @@ export const ProblemScene: React.FC = () => {
               fontSize: 13,
               color: C.red,
               fontWeight: 700,
-              letterSpacing: "0.2em",
+              letterSpacing: "0.22em",
               textTransform: "uppercase",
-              marginBottom: 24,
+              marginBottom: 14,
               fontFamily: FONT.sans,
             }}
           >
             Le problème
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {PROBLEMS.map((p, i) => {
-              const cardOp = interpolate(frame, [i * 18, i * 18 + 18], [0, 1], { extrapolateRight: "clamp" });
-              const cardY = spring({
-                fps,
-                frame: Math.max(0, frame - i * 18),
-                config: { damping: 18, stiffness: 260, mass: 0.9 },
-                from: 20,
-                to: 0,
-              });
-              return (
-                <div
-                  key={i}
-                  style={{
-                    background: C.redBg,
-                    border: "1px solid rgba(239,68,68,0.25)",
-                    borderRadius: 14,
-                    padding: "20px 24px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 16,
-                    opacity: cardOp,
-                    transform: `translateY(${cardY}px)`,
-                    fontFamily: FONT.sans,
-                  }}
-                >
-                  <span style={{ fontSize: 36 }}>{p.icon}</span>
-                  <span
-                    style={{
-                      fontSize: 20,
-                      fontWeight: 700,
-                      color: "#fff",
-                    }}
-                  >
-                    {p.text}
-                  </span>
-                </div>
-              );
-            })}
+          <div
+            style={{
+              fontSize: 52,
+              fontWeight: 900,
+              color: "#fff",
+              fontFamily: FONT.sans,
+              letterSpacing: "-1.5px",
+              lineHeight: 1.1,
+            }}
+          >
+            Votre boutique perd des ventes{" "}
+            <span style={{ color: C.red }}>chaque nuit</span>
           </div>
         </div>
 
-        {/* Vertical divider */}
-        <div
-          style={{
-            width: 1,
-            height: 320,
-            background: "linear-gradient(180deg, transparent, rgba(124,58,237,0.4), transparent)",
-            flexShrink: 0,
-          }}
-        />
+        {/* 3 problem cards */}
+        <div style={{ display: "flex", gap: 28, width: "100%" }}>
+          {PROBLEMS.map((p, i) => {
+            const delay = i * 22;
+            const sc = spring({
+              fps,
+              frame: Math.max(0, frame - (30 + delay)),
+              config: { damping: 18, stiffness: 260, mass: 0.9 },
+              from: 0.88,
+              to: 1,
+            });
+            const op = interpolate(frame, [30 + delay, 48 + delay], [0, 1], { extrapolateRight: "clamp" });
+            const barW = interpolate(frame, [55 + delay, 110 + delay], [0, 100], { extrapolateRight: "clamp" });
 
-        {/* RIGHT: solution */}
-        <div
-          style={{
-            flex: 1,
-            transform: `translateX(${rightX}px)`,
-            opacity: rightOp,
-            paddingLeft: 80,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 32,
-              fontWeight: 800,
-              color: "#fff",
-              lineHeight: 1.25,
-              letterSpacing: "-0.5px",
-              marginBottom: 32,
-              fontFamily: FONT.sans,
-            }}
-          >
-            Et si votre site vendait{" "}
-            <span
-              style={{
-                background: `linear-gradient(90deg, ${C.accent}, #c4b5fd)`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              24h/24&nbsp;?
-            </span>
-          </div>
-
-          {/* Chat bubble card */}
-          <div
-            style={{
-              background: "rgba(124,58,237,0.1)",
-              border: "1px solid rgba(124,58,237,0.3)",
-              borderRadius: 18,
-              padding: "22px 26px",
-              transform: `scale(${chatScale})`,
-              fontFamily: FONT.sans,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                marginBottom: 14,
-              }}
-            >
+            return (
               <div
+                key={i}
                 style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
-                  background: C.gradient,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 15,
-                  fontWeight: 900,
-                  color: "#fff",
+                  flex: 1,
+                  background: p.bg,
+                  border: `1px solid ${p.border}`,
+                  borderRadius: 20,
+                  padding: "36px 30px",
+                  transform: `scale(${sc}) translateY(${interpolate(frame, [30+delay, 48+delay], [20, 0], { extrapolateRight: "clamp" })}px)`,
+                  opacity: op,
+                  fontFamily: FONT.sans,
+                  boxShadow: `0 0 60px ${p.color}0d`,
                 }}
               >
-                A
+                <div style={{ fontSize: 52, marginBottom: 20 }}>{p.icon}</div>
+                <div
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 900,
+                    color: "#fff",
+                    marginBottom: 14,
+                    lineHeight: 1.25,
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {p.title}
+                </div>
+                <div
+                  style={{
+                    fontSize: 15,
+                    color: "rgba(255,255,255,0.5)",
+                    lineHeight: 1.65,
+                    marginBottom: 28,
+                  }}
+                >
+                  {p.desc}
+                </div>
+                {/* Animated color bar */}
+                <div
+                  style={{
+                    height: 3,
+                    borderRadius: 3,
+                    background: p.color,
+                    width: `${barW}%`,
+                    opacity: 0.7,
+                  }}
+                />
+                {/* Accent number */}
+                <div
+                  style={{
+                    marginTop: 20,
+                    fontSize: 11,
+                    color: p.accent,
+                    fontWeight: 600,
+                    letterSpacing: 1,
+                    opacity: interpolate(frame, [80+delay, 110+delay], [0, 1], { extrapolateRight: "clamp" }),
+                  }}
+                >
+                  {i === 0 ? "60% abandons nocturnes" : i === 1 ? "50× / jour en moyenne" : "2% sans assistance"}
+                </div>
               </div>
-              <span style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>AuraFlow AI</span>
-              <span
-                style={{
-                  width: 7,
-                  height: 7,
-                  borderRadius: "50%",
-                  background: "#4ade80",
-                  marginLeft: "auto",
-                  boxShadow: "0 0 8px #4ade80",
-                }}
-              />
-            </div>
-            <div
-              style={{
-                fontSize: 16,
-                color: "rgba(255,255,255,0.75)",
-                lineHeight: 1.6,
-              }}
-            >
-              AuraFlow AI répond{" "}
-              <span style={{ color: C.accent, fontWeight: 700 }}>à chaque visiteur</span>,{" "}
-              chaque nuit
-            </div>
-          </div>
+            );
+          })}
         </div>
       </AbsoluteFill>
     </AbsoluteFill>

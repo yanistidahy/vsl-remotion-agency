@@ -9,9 +9,12 @@ export const HeroScene: React.FC = () => {
   const { fps, durationInFrames } = useVideoConfig();
 
   const fadeIn = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
-  const fadeOut = interpolate(frame, [durationInFrames - 20, durationInFrames], [1, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
+  // Slide out left + fade at the end
+  const slideOut = interpolate(frame, [durationInFrames - 22, durationInFrames], [0, -1920], {
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+  const fadeOut = interpolate(frame, [durationInFrames - 22, durationInFrames], [1, 0], {
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
 
   const taglineY = spring({ fps, frame: Math.max(0, frame - 18), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 40, to: 0 });
@@ -20,7 +23,8 @@ export const HeroScene: React.FC = () => {
   const subY = spring({ fps, frame: Math.max(0, frame - 38), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 30, to: 0 });
   const subOp = interpolate(frame, [38, 56], [0, 1], { extrapolateRight: "clamp" });
 
-  const badgeOp = interpolate(frame, [60, 80], [0, 1], { extrapolateRight: "clamp" });
+  const badgeOp = interpolate(frame, [62, 82], [0, 1], { extrapolateRight: "clamp" });
+  const badgeY = spring({ fps, frame: Math.max(0, frame - 62), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 20, to: 0 });
 
   const glowPulse = 0.55 + 0.45 * Math.sin(frame / 28);
 
@@ -28,7 +32,8 @@ export const HeroScene: React.FC = () => {
     <AbsoluteFill
       style={{
         background: C.dark,
-        opacity: fadeIn * fadeOut,
+        transform: `translateX(${slideOut}px)`,
+        opacity: Math.min(fadeIn, fadeOut),
       }}
     >
       {/* Grid */}
@@ -44,7 +49,7 @@ export const HeroScene: React.FC = () => {
         }}
       />
 
-      {/* Purple radial glow */}
+      {/* Radial glow */}
       <div
         style={{
           position: "absolute",
@@ -67,15 +72,12 @@ export const HeroScene: React.FC = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: 0,
         }}
       >
-        {/* Logo */}
         <div style={{ marginBottom: 36 }}>
           <AuraLogo size={72} showWordmark={true} startFrame={0} />
         </div>
 
-        {/* Tagline */}
         <div
           style={{
             opacity: taglineOp,
@@ -92,7 +94,6 @@ export const HeroScene: React.FC = () => {
           L'assistant IA qui vend pour vous
         </div>
 
-        {/* Sub headline */}
         <div
           style={{
             opacity: subOp,
@@ -110,10 +111,10 @@ export const HeroScene: React.FC = () => {
           <span style={{ color: "rgba(167,139,250,0.8)" }}>24h/24</span>
         </div>
 
-        {/* Badges */}
         <div
           style={{
             opacity: badgeOp,
+            transform: `translateY(${badgeY}px)`,
             display: "flex",
             gap: 14,
           }}

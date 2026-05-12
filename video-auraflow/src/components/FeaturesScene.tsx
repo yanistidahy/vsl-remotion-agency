@@ -31,22 +31,24 @@ export const FeaturesScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
+  const slideIn = interpolate(frame, [0, 22], [1920, 0], { extrapolateRight: "clamp" });
   const fadeIn = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
-  const fadeOut = interpolate(frame, [durationInFrames - 20, durationInFrames], [1, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
+  const slideOut = interpolate(frame, [durationInFrames - 22, durationInFrames], [0, -1920], {
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+  const fadeOut = interpolate(frame, [durationInFrames - 22, durationInFrames], [1, 0], {
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
 
-  const titleOp = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
   const titleY = spring({ fps, frame, config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 30, to: 0 });
-
-  const statsOp = interpolate(frame, [200, 220], [0, 1], { extrapolateRight: "clamp" });
+  const titleOp = interpolate(frame, [0, 20], [0, 1], { extrapolateRight: "clamp" });
 
   return (
     <AbsoluteFill
       style={{
         background: `radial-gradient(ellipse 120% 80% at 50% 110%, #0f0920 0%, ${C.dark} 55%)`,
-        opacity: fadeIn * fadeOut,
+        transform: `translateX(${frame < durationInFrames - 22 ? slideIn : slideOut}px)`,
+        opacity: Math.min(fadeIn, fadeOut),
       }}
     >
       <AbsoluteFill
@@ -58,7 +60,6 @@ export const FeaturesScene: React.FC = () => {
           padding: "0 120px",
         }}
       >
-        {/* Title */}
         <div
           style={{
             opacity: titleOp,
@@ -72,7 +73,7 @@ export const FeaturesScene: React.FC = () => {
               fontSize: 13,
               color: C.accent,
               fontWeight: 700,
-              letterSpacing: "0.2em",
+              letterSpacing: "0.22em",
               textTransform: "uppercase",
               marginBottom: 14,
               fontFamily: FONT.sans,
@@ -103,18 +104,12 @@ export const FeaturesScene: React.FC = () => {
           </div>
         </div>
 
-        {/* Feature cards */}
         <div style={{ display: "flex", gap: 28, width: "100%", marginBottom: 72 }}>
           {FEATURES.map((f, i) => {
-            const sc = spring({
-              fps,
-              frame: Math.max(0, frame - (40 + f.delay)),
-              config: { damping: 18, stiffness: 260, mass: 0.9 },
-              from: 0.88,
-              to: 1,
-            });
+            const sc = spring({ fps, frame: Math.max(0, frame - (40 + f.delay)), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 0.88, to: 1 });
             const op = interpolate(frame, [40 + f.delay, 58 + f.delay], [0, 1], { extrapolateRight: "clamp" });
             const barW = interpolate(frame, [60 + f.delay, 120 + f.delay], [0, 100], { extrapolateRight: "clamp" });
+            const slideY = interpolate(frame, [40 + f.delay, 58 + f.delay], [20, 0], { extrapolateRight: "clamp" });
 
             return (
               <div
@@ -125,14 +120,11 @@ export const FeaturesScene: React.FC = () => {
                   border: "1px solid rgba(124,58,237,0.2)",
                   borderRadius: 20,
                   padding: "36px 28px",
-                  transform: `scale(${sc}) translateY(${interpolate(frame, [40 + f.delay, 58 + f.delay], [18, 0], { extrapolateRight: "clamp" })}px)`,
+                  transform: `scale(${sc}) translateY(${slideY}px)`,
                   opacity: op,
                   fontFamily: FONT.sans,
-                  position: "relative",
-                  overflow: "hidden",
                 }}
               >
-                {/* Icon box */}
                 <div
                   style={{
                     width: 72,
@@ -144,53 +136,28 @@ export const FeaturesScene: React.FC = () => {
                     justifyContent: "center",
                     fontSize: 32,
                     marginBottom: 20,
-                    boxShadow: `0 8px 24px rgba(124,58,237,0.35)`,
+                    boxShadow: "0 8px 24px rgba(124,58,237,0.35)",
                   }}
                 >
                   {f.icon}
                 </div>
-                <div
-                  style={{
-                    fontSize: 20,
-                    fontWeight: 800,
-                    color: "#fff",
-                    marginBottom: 10,
-                    lineHeight: 1.2,
-                  }}
-                >
+                <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 10, lineHeight: 1.2 }}>
                   {f.title}
                 </div>
-                <div
-                  style={{
-                    fontSize: 15,
-                    color: "rgba(255,255,255,0.5)",
-                    lineHeight: 1.6,
-                    marginBottom: 24,
-                  }}
-                >
+                <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, marginBottom: 24 }}>
                   {f.desc}
                 </div>
-                {/* Accent bottom bar */}
-                <div
-                  style={{
-                    height: 3,
-                    borderRadius: 3,
-                    background: C.accent,
-                    width: `${barW}%`,
-                    opacity: 0.7,
-                  }}
-                />
+                <div style={{ height: 3, borderRadius: 3, background: C.accent, width: `${barW}%`, opacity: 0.7 }} />
               </div>
             );
           })}
         </div>
 
-        {/* Stats row */}
         <div
           style={{
             display: "flex",
             gap: 100,
-            opacity: statsOp,
+            opacity: interpolate(frame, [200, 220], [0, 1], { extrapolateRight: "clamp" }),
           }}
         >
           <CounterAnimation target={35} prefix="+" suffix="%" label="de conversion" startFrame={210} duration={65} color={C.accent} />

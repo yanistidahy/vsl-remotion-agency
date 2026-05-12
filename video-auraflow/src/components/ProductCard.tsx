@@ -11,22 +11,23 @@ export const ProductCard: React.FC<Props> = ({ startFrame = 0 }) => {
   const { fps } = useVideoConfig();
   const local = Math.max(0, frame - startFrame);
 
-  const scale = spring({ fps, frame: local, config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 0.85, to: 1 });
-  const opacity = interpolate(local, [0, 12], [0, 1], { extrapolateRight: "clamp" });
+  const scale = spring({ fps, frame: local, config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 0.82, to: 1 });
+  const opacity = interpolate(local, [0, 14], [0, 1], { extrapolateRight: "clamp" });
+  const y = interpolate(local, [0, 14], [12, 0], { extrapolateRight: "clamp" });
 
   return (
     <div
       style={{
         background: "#fff",
         border: `1.5px solid ${C.accent}55`,
-        borderRadius: 14,
+        borderRadius: 16,
         padding: "14px 16px",
-        transform: `scale(${scale})`,
-        transformOrigin: "top left",
+        transform: `scale(${scale}) translateY(${y}px)`,
+        transformOrigin: "top center",
         opacity,
         fontFamily: FONT.sans,
-        boxShadow: `0 8px 30px rgba(124,58,237,0.12)`,
-        marginTop: 4,
+        boxShadow: `0 12px 40px rgba(124,58,237,0.14)`,
+        marginTop: 6,
         marginBottom: 4,
       }}
     >
@@ -37,28 +38,32 @@ export const ProductCard: React.FC<Props> = ({ startFrame = 0 }) => {
           fontWeight: 700,
           letterSpacing: 1.2,
           textTransform: "uppercase",
-          marginBottom: 10,
+          marginBottom: 12,
         }}
       >
         ✨ Recommandé pour vous
       </div>
 
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+        {/* Product photo */}
         <div
           style={{
-            width: 64,
-            height: 64,
+            width: 72,
+            height: 88,
             borderRadius: 10,
-            background: "linear-gradient(135deg, #f5f2ff 0%, #ede9fe 100%)",
+            background: "linear-gradient(135deg, #fdf8f0 0%, #f5ede0 100%)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 32,
             flexShrink: 0,
-            border: "1px solid #e8e0ff",
+            border: "1px solid #e8d8c0",
+            overflow: "hidden",
           }}
         >
-          🌿
+          <Img
+            src={staticFile("product-bottle.svg")}
+            style={{ width: 52, height: 78, objectFit: "contain" }}
+          />
         </div>
 
         <div style={{ flex: 1 }}>
@@ -73,29 +78,23 @@ export const ProductCard: React.FC<Props> = ({ startFrame = 0 }) => {
           >
             Huile de Baobab Bio 250ml
           </div>
-          <div style={{ fontSize: 11, color: "#9ca3af", marginBottom: 6 }}>
-            Hydratation & anti-frisottis
+          <div style={{ fontSize: 11, color: "#9ca3af", marginBottom: 8 }}>
+            Hydratation · anti-frisottis
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span
-              style={{
-                fontSize: 18,
-                fontWeight: 900,
-                color: C.primary,
-              }}
-            >
+            <span style={{ fontSize: 20, fontWeight: 900, color: C.primary }}>
               24,65€
             </span>
             <span
               style={{
-                fontSize: 10,
+                fontSize: 10.5,
                 color: "#6b7280",
                 background: "#f3f4f6",
                 borderRadius: 20,
-                padding: "2px 7px",
+                padding: "2px 8px",
               }}
             >
-              ⭐ 4.9
+              ⭐ 4.9 (128)
             </span>
           </div>
         </div>
@@ -103,12 +102,12 @@ export const ProductCard: React.FC<Props> = ({ startFrame = 0 }) => {
 
       <div
         style={{
-          marginTop: 12,
+          marginTop: 14,
           background: C.gradient,
-          borderRadius: 9,
-          padding: "9px 0",
+          borderRadius: 10,
+          padding: "10px 0",
           textAlign: "center",
-          fontSize: 13,
+          fontSize: 13.5,
           fontWeight: 700,
           color: "#fff",
           letterSpacing: 0.2,
