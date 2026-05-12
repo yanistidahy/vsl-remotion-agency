@@ -11,55 +11,54 @@ export const ProductCard: React.FC<Props> = ({ startFrame = 0 }) => {
   const { fps } = useVideoConfig();
   const local = Math.max(0, frame - startFrame);
 
-  const slide = spring({ fps, frame: local, config: { damping: 22, stiffness: 180 }, from: 60, to: 0 });
-  const opacity = interpolate(local, [0, 20], [0, 1], { extrapolateRight: "clamp" });
+  const scale = spring({ fps, frame: local, config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 0.85, to: 1 });
+  const opacity = interpolate(local, [0, 12], [0, 1], { extrapolateRight: "clamp" });
 
   return (
     <div
       style={{
-        background: "rgba(15,10,30,0.97)",
-        border: `1px solid ${C.accent}55`,
-        borderRadius: 16,
-        padding: "20px 22px",
-        width: 320,
-        transform: `translateY(${slide}px)`,
+        background: "#fff",
+        border: `1.5px solid ${C.accent}55`,
+        borderRadius: 14,
+        padding: "14px 16px",
+        transform: `scale(${scale})`,
+        transformOrigin: "top left",
         opacity,
         fontFamily: FONT.sans,
-        boxShadow: `0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px ${C.primary}22`,
+        boxShadow: `0 8px 30px rgba(124,58,237,0.12)`,
+        marginTop: 4,
+        marginBottom: 4,
       }}
     >
       <div
         style={{
-          fontSize: 11,
-          color: C.accent,
-          fontWeight: 600,
-          letterSpacing: 1.5,
+          fontSize: 10,
+          color: C.primary,
+          fontWeight: 700,
+          letterSpacing: 1.2,
           textTransform: "uppercase",
-          marginBottom: 14,
+          marginBottom: 10,
         }}
       >
         ✨ Recommandé pour vous
       </div>
 
-      <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
         <div
           style={{
-            width: 80,
-            height: 80,
-            borderRadius: 12,
-            background: "linear-gradient(135deg, #1a1025 0%, #2d1b4e 100%)",
+            width: 64,
+            height: 64,
+            borderRadius: 10,
+            background: "linear-gradient(135deg, #f5f2ff 0%, #ede9fe 100%)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            fontSize: 32,
             flexShrink: 0,
-            border: `1px solid ${C.primary}44`,
-            overflow: "hidden",
+            border: "1px solid #e8e0ff",
           }}
         >
-          <Img
-            src={staticFile("product-baobab.svg")}
-            style={{ width: 64, height: 64, objectFit: "contain" }}
-          />
+          🌿
         </div>
 
         <div style={{ flex: 1 }}>
@@ -67,26 +66,33 @@ export const ProductCard: React.FC<Props> = ({ startFrame = 0 }) => {
             style={{
               fontSize: 13,
               fontWeight: 700,
-              color: "#fff",
+              color: "#18181b",
               lineHeight: 1.3,
-              marginBottom: 4,
+              marginBottom: 3,
             }}
           >
             Huile de Baobab Bio 250ml
           </div>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginBottom: 8 }}>
+          <div style={{ fontSize: 11, color: "#9ca3af", marginBottom: 6 }}>
             Hydratation & anti-frisottis
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 18, fontWeight: 800, color: C.accent }}>24.65€</span>
             <span
               style={{
-                fontSize: 11,
-                background: `${C.primary}33`,
-                color: C.accent,
+                fontSize: 18,
+                fontWeight: 900,
+                color: C.primary,
+              }}
+            >
+              24,65€
+            </span>
+            <span
+              style={{
+                fontSize: 10,
+                color: "#6b7280",
+                background: "#f3f4f6",
                 borderRadius: 20,
-                padding: "2px 8px",
-                border: `1px solid ${C.primary}44`,
+                padding: "2px 7px",
               }}
             >
               ⭐ 4.9
@@ -95,24 +101,21 @@ export const ProductCard: React.FC<Props> = ({ startFrame = 0 }) => {
         </div>
       </div>
 
-      <button
+      <div
         style={{
-          marginTop: 16,
-          width: "100%",
-          padding: "10px 0",
+          marginTop: 12,
           background: C.gradient,
-          border: "none",
-          borderRadius: 10,
-          color: "#fff",
+          borderRadius: 9,
+          padding: "9px 0",
+          textAlign: "center",
           fontSize: 13,
           fontWeight: 700,
-          fontFamily: FONT.sans,
-          cursor: "pointer",
-          letterSpacing: 0.3,
+          color: "#fff",
+          letterSpacing: 0.2,
         }}
       >
-        Ajouter au panier →
-      </button>
+        Voir le produit →
+      </div>
     </div>
   );
 };

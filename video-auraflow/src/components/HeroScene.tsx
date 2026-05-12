@@ -1,56 +1,65 @@
 import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { C, FONT } from "../constants";
+import { AuraLogo } from "./AuraLogo";
 import { ParticleEffect } from "./ParticleEffect";
 
 export const HeroScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
-  const logoScale = spring({ fps, frame, config: { damping: 20, stiffness: 200 }, from: 0, to: 1 });
-  const logoOpacity = interpolate(frame, [0, 20], [0, 1], { extrapolateRight: "clamp" });
-
-  const tagline1Opacity = interpolate(frame, [25, 50], [0, 1], { extrapolateRight: "clamp" });
-  const tagline1Y = interpolate(frame, [25, 50], [30, 0], { extrapolateRight: "clamp" });
-
-  const tagline2Opacity = interpolate(frame, [40, 65], [0, 1], { extrapolateRight: "clamp" });
-  const tagline2Y = interpolate(frame, [40, 65], [30, 0], { extrapolateRight: "clamp" });
-
-  const subOpacity = interpolate(frame, [60, 90], [0, 1], { extrapolateRight: "clamp" });
-
-  const badgeOpacity = interpolate(frame, [80, 110], [0, 1], { extrapolateRight: "clamp" });
-  const badgeY = interpolate(frame, [80, 110], [20, 0], { extrapolateRight: "clamp" });
-
-  const fadeOut = interpolate(frame, [durationInFrames - 30, durationInFrames], [1, 0], {
+  const fadeIn = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
+  const fadeOut = interpolate(frame, [durationInFrames - 20, durationInFrames], [1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  const glowPulse = 0.6 + 0.4 * Math.sin(frame / 25);
+  const taglineY = spring({ fps, frame: Math.max(0, frame - 18), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 40, to: 0 });
+  const taglineOp = interpolate(frame, [18, 36], [0, 1], { extrapolateRight: "clamp" });
+
+  const subY = spring({ fps, frame: Math.max(0, frame - 38), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 30, to: 0 });
+  const subOp = interpolate(frame, [38, 56], [0, 1], { extrapolateRight: "clamp" });
+
+  const badgeOp = interpolate(frame, [60, 80], [0, 1], { extrapolateRight: "clamp" });
+
+  const glowPulse = 0.55 + 0.45 * Math.sin(frame / 28);
 
   return (
     <AbsoluteFill
       style={{
-        background: `radial-gradient(ellipse 80% 60% at 50% 40%, #1a0a35 0%, ${C.darker} 70%)`,
-        opacity: fadeOut,
+        background: C.dark,
+        opacity: fadeIn * fadeOut,
       }}
     >
-      <ParticleEffect count={35} color={C.primary} speed={0.7} />
-
-      {/* Glow backdrop */}
+      {/* Grid */}
       <div
         style={{
           position: "absolute",
-          top: "50%",
+          inset: 0,
+          backgroundImage: `
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px)
+          `,
+          backgroundSize: "80px 80px",
+        }}
+      />
+
+      {/* Purple radial glow */}
+      <div
+        style={{
+          position: "absolute",
+          top: "42%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 700,
+          width: 900,
           height: 700,
           borderRadius: "50%",
-          background: `radial-gradient(ellipse, ${C.primary}${Math.round(glowPulse * 25).toString(16).padStart(2, "0")} 0%, transparent 70%)`,
+          background: `radial-gradient(ellipse, rgba(124,58,237,${(0.18 * glowPulse).toFixed(2)}) 0%, transparent 70%)`,
           pointerEvents: "none",
         }}
       />
+
+      <ParticleEffect count={28} color={C.primary} speed={0.65} />
 
       <AbsoluteFill
         style={{
@@ -62,129 +71,59 @@ export const HeroScene: React.FC = () => {
         }}
       >
         {/* Logo */}
-        <div
-          style={{
-            transform: `scale(${logoScale})`,
-            opacity: logoOpacity,
-            marginBottom: 32,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-            }}
-          >
-            <div
-              style={{
-                width: 72,
-                height: 72,
-                borderRadius: 20,
-                background: C.gradient,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 36,
-                fontWeight: 900,
-                color: "#fff",
-                fontFamily: FONT.sans,
-                boxShadow: `0 0 40px ${C.primary}88`,
-              }}
-            >
-              A
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: 52,
-                  fontWeight: 900,
-                  color: "#fff",
-                  fontFamily: FONT.sans,
-                  letterSpacing: "-1px",
-                  lineHeight: 1,
-                }}
-              >
-                AuraFlow
-                <span
-                  style={{
-                    background: `linear-gradient(90deg, ${C.accent}, #c4b5fd)`,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
-                >
-                  {" "}AI
-                </span>
-              </div>
-            </div>
-          </div>
+        <div style={{ marginBottom: 36 }}>
+          <AuraLogo size={72} showWordmark={true} startFrame={0} />
         </div>
 
         {/* Tagline */}
         <div
           style={{
-            opacity: tagline1Opacity,
-            transform: `translateY(${tagline1Y}px)`,
-            fontSize: 64,
-            fontWeight: 800,
-            color: "#fff",
+            opacity: taglineOp,
+            transform: `translateY(${taglineY}px)`,
+            fontSize: 14,
+            fontWeight: 700,
+            letterSpacing: "0.25em",
+            textTransform: "uppercase",
+            color: C.accent,
             fontFamily: FONT.sans,
-            letterSpacing: "-2px",
-            textAlign: "center",
-            lineHeight: 1.1,
+            marginBottom: 20,
           }}
         >
-          Votre assistant IA
-        </div>
-        <div
-          style={{
-            opacity: tagline2Opacity,
-            transform: `translateY(${tagline2Y}px)`,
-            fontSize: 64,
-            fontWeight: 800,
-            fontFamily: FONT.sans,
-            letterSpacing: "-2px",
-            textAlign: "center",
-            lineHeight: 1.1,
-            background: `linear-gradient(90deg, ${C.accent}, #c4b5fd, ${C.accent})`,
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            marginBottom: 28,
-          }}
-        >
-          pour votre boutique
+          L'assistant IA qui vend pour vous
         </div>
 
+        {/* Sub headline */}
         <div
           style={{
-            opacity: subOpacity,
-            fontSize: 22,
-            color: "rgba(255,255,255,0.55)",
+            opacity: subOp,
+            transform: `translateY(${subY}px)`,
+            fontSize: 26,
+            color: "rgba(255,255,255,0.45)",
             fontFamily: FONT.sans,
             textAlign: "center",
-            maxWidth: 620,
+            maxWidth: 600,
             lineHeight: 1.5,
-            marginBottom: 48,
+            marginBottom: 52,
           }}
         >
-          Convertissez vos visiteurs 24h/24 avec un chatbot personnalisé
+          Convertissez chaque visiteur,{" "}
+          <span style={{ color: "rgba(167,139,250,0.8)" }}>24h/24</span>
         </div>
 
         {/* Badges */}
         <div
           style={{
-            opacity: badgeOpacity,
-            transform: `translateY(${badgeY}px)`,
+            opacity: badgeOp,
             display: "flex",
-            gap: 16,
+            gap: 14,
           }}
         >
-          {["🛒 E-commerce", "💬 Chat IA", "🇫🇷 En français"].map((b) => (
+          {["🛒 E-commerce", "💬 Chat IA", "🇫🇷 Français"].map((b) => (
             <div
               key={b}
               style={{
-                background: "rgba(124,58,237,0.15)",
-                border: `1px solid ${C.primary}55`,
+                background: "rgba(124,58,237,0.12)",
+                border: "1px solid rgba(124,58,237,0.3)",
                 borderRadius: 30,
                 padding: "8px 22px",
                 fontSize: 14,
@@ -198,23 +137,6 @@ export const HeroScene: React.FC = () => {
           ))}
         </div>
       </AbsoluteFill>
-
-      {/* URL strip at bottom */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 40,
-          left: 0,
-          right: 0,
-          textAlign: "center",
-          fontSize: 16,
-          color: "rgba(255,255,255,0.2)",
-          fontFamily: FONT.sans,
-          opacity: subOpacity,
-        }}
-      >
-        auraflowaii.fr
-      </div>
     </AbsoluteFill>
   );
 };

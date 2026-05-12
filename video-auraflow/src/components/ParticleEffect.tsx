@@ -20,7 +20,7 @@ export const ParticleEffect: React.FC<Props> = ({
     const startY = 1080 + random(`psy-${i}`) * 300;
     const drift = (random(`pdrift-${i}`) - 0.5) * 120;
     const spd = (0.6 + random(`pspd-${i}`) * 1.2) * speed;
-    const size = 3 + random(`psz-${i}`) * 7;
+    const size = 2 + random(`psz-${i}`) * 5;
     const delay = random(`pdel-${i}`) * 120;
 
     const currentY = startY - Math.max(0, frame - delay) * spd;
@@ -48,7 +48,7 @@ export const ParticleEffect: React.FC<Props> = ({
             borderRadius: "50%",
             background: color,
             opacity: p.opacity,
-            boxShadow: `0 0 ${p.size * 2}px ${color}`,
+            boxShadow: `0 0 ${p.size * 2.5}px ${color}88`,
             pointerEvents: "none",
           }}
         />

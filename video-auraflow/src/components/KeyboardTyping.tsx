@@ -2,35 +2,36 @@ import React from "react";
 import { interpolate } from "remotion";
 import { C, FONT } from "../constants";
 
-const ROW1 = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"];
-const ROW2 = ["A", "S", "D", "F", "G", "H", "J", "K", "L"];
-const ROW3 = ["Z", "X", "C", "V", "B", "N", "M"];
+// AZERTY layout
+const ROW1 = ["A", "Z", "E", "R", "T", "Y", "U", "I", "O", "P"];
+const ROW2 = ["Q", "S", "D", "F", "G", "H", "J", "K", "L", "M"];
+const ROW3 = ["W", "X", "C", "V", "B", "N"];
 
-const Key: React.FC<{ label: string; active: boolean; w?: number; h?: number }> = ({
+const Key: React.FC<{ label: string; active: boolean; w?: number }> = ({
   label,
   active,
-  w = 58,
-  h = 56,
+  w = 36,
 }) => (
   <div
     style={{
       width: w,
-      height: h,
-      background: active ? C.primary : "#1e1e1e",
-      border: `1px solid ${active ? C.accent : "#333"}`,
-      borderRadius: 7,
+      height: 36,
+      background: active ? C.gradient : "rgba(255,255,255,0.08)",
+      border: `1px solid ${active ? C.accent : "rgba(255,255,255,0.12)"}`,
+      borderRadius: 6,
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      color: active ? "#fff" : "#888",
-      fontSize: label.length > 3 ? 11 : label.length > 1 ? 13 : 16,
+      color: active ? "#fff" : "rgba(255,255,255,0.6)",
+      fontSize: label.length > 3 ? 9 : label.length > 1 ? 11 : 13,
       fontWeight: 700,
       fontFamily: FONT.sans,
-      transform: active ? "scale(0.87) translateY(2px)" : "scale(1)",
+      transform: active ? "scale(0.9) translateY(1px)" : "scale(1)",
       boxShadow: active
-        ? `0 0 18px ${C.primary}90, inset 0 -2px 0 rgba(0,0,0,0.4)`
-        : "inset 0 -4px 0 rgba(0,0,0,0.5)",
+        ? `0 0 14px ${C.primary}99`
+        : "inset 0 -2px 0 rgba(0,0,0,0.3)",
       userSelect: "none",
+      flexShrink: 0,
     }}
   >
     {label}
@@ -43,8 +44,8 @@ type Props = {
 };
 
 export const KeyboardTyping: React.FC<Props> = ({ activeKey, slideProgress }) => {
-  const y = interpolate(slideProgress, [0, 1], [260, 0]);
-  const opacity = interpolate(slideProgress, [0, 0.4], [0, 1], { extrapolateRight: "clamp" });
+  const y = interpolate(slideProgress, [0, 1], [200, 0], { extrapolateRight: "clamp" });
+  const opacity = interpolate(slideProgress, [0, 0.5], [0, 1], { extrapolateRight: "clamp" });
   const a = (k: string) => activeKey === k;
 
   return (
@@ -58,42 +59,43 @@ export const KeyboardTyping: React.FC<Props> = ({ activeKey, slideProgress }) =>
         justifyContent: "center",
         transform: `translateY(${y}px)`,
         opacity,
-        zIndex: 20,
+        zIndex: 30,
+        pointerEvents: "none",
       }}
     >
       <div
         style={{
-          background: "rgba(10,10,15,0.96)",
-          borderRadius: "22px 22px 0 0",
-          padding: "26px 44px 22px",
+          background: "rgba(8,6,18,0.97)",
+          borderRadius: "18px 18px 0 0",
+          padding: "20px 36px 18px",
           display: "flex",
           flexDirection: "column",
-          gap: 8,
+          gap: 6,
           alignItems: "center",
-          boxShadow: "0 -12px 50px rgba(0,0,0,0.7)",
-          border: "1px solid rgba(124,58,237,0.15)",
+          boxShadow: "0 -10px 40px rgba(0,0,0,0.6)",
+          border: "1px solid rgba(124,58,237,0.2)",
           borderBottom: "none",
         }}
       >
-        <div style={{ display: "flex", gap: 6 }}>
+        <div style={{ display: "flex", gap: 5 }}>
           {ROW1.map((k) => <Key key={k} label={k} active={a(k)} />)}
         </div>
-        <div style={{ display: "flex", gap: 6 }}>
-          <div style={{ width: 29 }} />
+        <div style={{ display: "flex", gap: 5 }}>
+          <div style={{ width: 18 }} />
           {ROW2.map((k) => <Key key={k} label={k} active={a(k)} />)}
-          <Key label="↵ ENTER" active={a("ENTER")} w={108} />
+          <Key label="↵" active={a("ENTER")} w={52} />
         </div>
-        <div style={{ display: "flex", gap: 6 }}>
-          <Key label="⇧" active={false} w={108} />
+        <div style={{ display: "flex", gap: 5 }}>
+          <Key label="⇧" active={false} w={80} />
           {ROW3.map((k) => <Key key={k} label={k} active={a(k)} />)}
-          <Key label="⇧" active={false} w={108} />
+          <Key label="⇧" active={false} w={80} />
         </div>
-        <div style={{ display: "flex", gap: 6 }}>
-          <Key label="⌘" active={false} w={68} />
-          <Key label="⌥" active={false} w={68} />
-          <Key label="" active={a("SPACE")} w={420} />
-          <Key label="⌥" active={false} w={68} />
-          <Key label="⌘" active={false} w={68} />
+        <div style={{ display: "flex", gap: 5 }}>
+          <Key label="⌘" active={false} w={52} />
+          <Key label="⌥" active={false} w={52} />
+          <Key label="" active={a("SPACE")} w={320} />
+          <Key label="⌥" active={false} w={52} />
+          <Key label="⌘" active={false} w={52} />
         </div>
       </div>
     </div>

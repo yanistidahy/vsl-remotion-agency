@@ -1,54 +1,54 @@
 import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { C, FONT } from "../constants";
+import { AuraLogo } from "./AuraLogo";
 import { ParticleEffect } from "./ParticleEffect";
 
 export const OutroScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
-  const logoScale = spring({ fps, frame, config: { damping: 20, stiffness: 200 }, from: 0, to: 1 });
-  const logoOpacity = interpolate(frame, [0, 20], [0, 1], { extrapolateRight: "clamp" });
-
-  const textOpacity = interpolate(frame, [20, 50], [0, 1], { extrapolateRight: "clamp" });
-  const textY = interpolate(frame, [20, 50], [30, 0], { extrapolateRight: "clamp" });
-
-  const ctaOpacity = interpolate(frame, [50, 80], [0, 1], { extrapolateRight: "clamp" });
-  const ctaScale = spring({ fps, frame: Math.max(0, frame - 50), config: { damping: 18, stiffness: 160 }, from: 0.85, to: 1 });
-
-  const urlOpacity = interpolate(frame, [80, 110], [0, 1], { extrapolateRight: "clamp" });
-
-  const fadeOut = interpolate(frame, [durationInFrames - 20, durationInFrames], [1, 0], {
+  const fadeIn = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
+  // Fade to black last 40 frames
+  const fadeOut = interpolate(frame, [durationInFrames - 40, durationInFrames], [1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  const glowPulse = 0.5 + 0.5 * Math.sin(frame / 20);
+  const h1Op = interpolate(frame, [22, 42], [0, 1], { extrapolateRight: "clamp" });
+  const h1Y = spring({ fps, frame: Math.max(0, frame - 22), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 30, to: 0 });
+
+  const ctaOp = interpolate(frame, [46, 66], [0, 1], { extrapolateRight: "clamp" });
+  const ctaScale = spring({ fps, frame: Math.max(0, frame - 46), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 0.85, to: 1 });
+
+  const urlOp = interpolate(frame, [72, 90], [0, 1], { extrapolateRight: "clamp" });
+
+  const glowPulse = 0.5 + 0.5 * Math.sin(frame / 25);
 
   return (
     <AbsoluteFill
       style={{
-        background: `radial-gradient(ellipse 100% 80% at 50% 50%, #1a0535 0%, ${C.darker} 60%)`,
-        opacity: fadeOut,
+        background: `linear-gradient(145deg, #1a0533 0%, #0f0823 30%, ${C.dark} 60%, #0d0520 100%)`,
+        opacity: fadeIn * fadeOut,
       }}
     >
-      <ParticleEffect count={50} color={C.primary} speed={0.8} />
-      <ParticleEffect count={20} color={C.accent} speed={0.5} />
-
-      {/* Glow */}
+      {/* Radial halo */}
       <div
         style={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 800,
-          height: 800,
+          width: 900,
+          height: 900,
           borderRadius: "50%",
-          background: `radial-gradient(ellipse, ${C.primary}${Math.round(glowPulse * 30).toString(16).padStart(2, "0")} 0%, transparent 70%)`,
+          background: `radial-gradient(ellipse, rgba(124,58,237,${(0.22 * glowPulse).toFixed(2)}) 0%, transparent 68%)`,
           pointerEvents: "none",
         }}
       />
+
+      <ParticleEffect count={40} color={C.primary} speed={0.7} />
+      <ParticleEffect count={14} color={C.accent} speed={0.4} />
 
       <AbsoluteFill
         style={{
@@ -59,83 +59,55 @@ export const OutroScene: React.FC = () => {
           gap: 0,
         }}
       >
-        {/* Logo */}
+        {/* Logo — springs in */}
+        <div style={{ marginBottom: 40 }}>
+          <AuraLogo size={160} showWordmark={false} startFrame={0} />
+        </div>
+
+        {/* H1 */}
         <div
           style={{
-            transform: `scale(${logoScale})`,
-            opacity: logoOpacity,
-            marginBottom: 36,
-            display: "flex",
-            alignItems: "center",
-            gap: 18,
+            opacity: h1Op,
+            transform: `translateY(${h1Y}px)`,
+            textAlign: "center",
+            marginBottom: 14,
           }}
         >
-          <div
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 22,
-              background: C.gradient,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 40,
-              fontWeight: 900,
-              color: "#fff",
-              fontFamily: FONT.sans,
-              boxShadow: `0 0 50px ${C.primary}99`,
-            }}
-          >
-            A
-          </div>
-          <div
+          <span
             style={{
               fontSize: 56,
               fontWeight: 900,
               color: "#fff",
               fontFamily: FONT.sans,
               letterSpacing: "-1.5px",
+              lineHeight: 1.1,
             }}
           >
-            AuraFlow{" "}
-            <span
-              style={{
-                background: `linear-gradient(90deg, ${C.accent}, #c4b5fd)`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              AI
-            </span>
-          </div>
+            Réservez votre{" "}
+          </span>
+          <span
+            style={{
+              fontSize: 56,
+              fontWeight: 900,
+              background: `linear-gradient(90deg, ${C.accent}, #c4b5fd)`,
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontFamily: FONT.sans,
+              letterSpacing: "-1.5px",
+              lineHeight: 1.1,
+            }}
+          >
+            démo gratuite
+          </span>
         </div>
 
         <div
           style={{
-            opacity: textOpacity,
-            transform: `translateY(${textY}px)`,
-            fontSize: 42,
-            fontWeight: 800,
-            color: "#fff",
-            fontFamily: FONT.sans,
-            textAlign: "center",
-            letterSpacing: "-1px",
-            lineHeight: 1.2,
-            marginBottom: 16,
-          }}
-        >
-          Votre assistant IA 24h/24
-        </div>
-
-        <div
-          style={{
-            opacity: textOpacity,
-            transform: `translateY(${textY}px)`,
+            opacity: h1Op,
             fontSize: 20,
-            color: "rgba(255,255,255,0.45)",
+            color: "rgba(255,255,255,0.4)",
             fontFamily: FONT.sans,
-            textAlign: "center",
-            marginBottom: 56,
+            marginBottom: 52,
           }}
         >
           Augmentez vos ventes dès aujourd'hui
@@ -144,28 +116,28 @@ export const OutroScene: React.FC = () => {
         {/* CTA button */}
         <div
           style={{
-            opacity: ctaOpacity,
+            opacity: ctaOp,
             transform: `scale(${ctaScale})`,
             background: C.gradient,
-            borderRadius: 16,
-            padding: "20px 56px",
+            borderRadius: 60,
+            padding: "22px 64px",
             fontSize: 22,
             fontWeight: 800,
             color: "#fff",
             fontFamily: FONT.sans,
-            letterSpacing: "-0.3px",
-            boxShadow: `0 12px 50px ${C.primary}55`,
-            marginBottom: 56,
+            letterSpacing: "-0.2px",
+            boxShadow: `0 14px 56px rgba(124,58,237,0.55)`,
+            marginBottom: 52,
           }}
         >
-          Démarrer maintenant →
+          Commencer maintenant →
         </div>
 
         {/* URL */}
         <div
           style={{
-            opacity: urlOpacity,
-            fontSize: 28,
+            opacity: urlOp,
+            fontSize: 24,
             fontWeight: 700,
             color: C.accent,
             fontFamily: FONT.sans,

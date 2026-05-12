@@ -3,24 +3,27 @@ import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } fr
 import { C, FONT } from "../constants";
 import { CounterAnimation } from "./CounterAnimation";
 
-const features = [
+const FEATURES = [
   {
     icon: "🤖",
-    title: "IA entraînée sur votre catalogue",
-    desc: "GPT-4 connaît chaque produit, ses caractéristiques et ses avantages pour des recommandations ultra-précises.",
-    color: C.accent,
+    title: "IA Conversationnelle",
+    desc: "Répond comme un vrai conseiller",
+    grad: "linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)",
+    delay: 0,
   },
   {
-    icon: "⚡",
-    title: "Réponse en moins d'1 seconde",
-    desc: "Vos clients n'attendent jamais. L'IA répond instantanément, 24h/24, 7j/7, sans aucune interruption.",
-    color: "#34d399",
+    icon: "🧠",
+    title: "Mémoire Client",
+    desc: "Se souvient de chaque visiteur",
+    grad: "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+    delay: 22,
   },
   {
-    icon: "🔗",
-    title: "Intégration Shopify en 5 min",
-    desc: "Une ligne de code. Aucune compétence technique requise. Opérationnel en moins de 5 minutes chrono.",
-    color: C.gold,
+    icon: "📦",
+    title: "Connaissance Produits",
+    desc: "Connaît tout votre catalogue",
+    grad: "linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%)",
+    delay: 44,
   },
 ];
 
@@ -28,19 +31,22 @@ export const FeaturesScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
-  const fadeOut = interpolate(frame, [durationInFrames - 30, durationInFrames], [1, 0], {
+  const fadeIn = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
+  const fadeOut = interpolate(frame, [durationInFrames - 20, durationInFrames], [1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  const titleOpacity = interpolate(frame, [0, 25], [0, 1], { extrapolateRight: "clamp" });
-  const titleY = interpolate(frame, [0, 25], [30, 0], { extrapolateRight: "clamp" });
+  const titleOp = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
+  const titleY = spring({ fps, frame, config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 30, to: 0 });
+
+  const statsOp = interpolate(frame, [200, 220], [0, 1], { extrapolateRight: "clamp" });
 
   return (
     <AbsoluteFill
       style={{
-        background: `radial-gradient(ellipse 120% 80% at 50% 100%, #0f0a25 0%, ${C.darker} 60%)`,
-        opacity: fadeOut,
+        background: `radial-gradient(ellipse 120% 80% at 50% 110%, #0f0920 0%, ${C.dark} 55%)`,
+        opacity: fadeIn * fadeOut,
       }}
     >
       <AbsoluteFill
@@ -49,12 +55,13 @@ export const FeaturesScene: React.FC = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          padding: "0 100px",
+          padding: "0 120px",
         }}
       >
+        {/* Title */}
         <div
           style={{
-            opacity: titleOpacity,
+            opacity: titleOp,
             transform: `translateY(${titleY}px)`,
             textAlign: "center",
             marginBottom: 60,
@@ -62,28 +69,28 @@ export const FeaturesScene: React.FC = () => {
         >
           <div
             style={{
-              fontSize: 14,
+              fontSize: 13,
               color: C.accent,
               fontWeight: 700,
-              letterSpacing: 3,
+              letterSpacing: "0.2em",
               textTransform: "uppercase",
-              marginBottom: 16,
+              marginBottom: 14,
               fontFamily: FONT.sans,
             }}
           >
-            Fonctionnalités
+            Pourquoi AuraFlow AI
           </div>
           <div
             style={{
               fontSize: 52,
-              fontWeight: 800,
+              fontWeight: 900,
               color: "#fff",
               fontFamily: FONT.sans,
               letterSpacing: "-1.5px",
               lineHeight: 1.1,
             }}
           >
-            Tout pour{" "}
+            Technologie{" "}
             <span
               style={{
                 background: `linear-gradient(90deg, ${C.accent}, #c4b5fd)`,
@@ -91,18 +98,23 @@ export const FeaturesScene: React.FC = () => {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              convertir plus
+              de pointe
             </span>
           </div>
         </div>
 
         {/* Feature cards */}
-        <div style={{ display: "flex", gap: 32, width: "100%", marginBottom: 64 }}>
-          {features.map((f, i) => {
-            const start = 40 + i * 30;
-            const sc = spring({ fps, frame: Math.max(0, frame - start), config: { damping: 22, stiffness: 200 }, from: 0.88, to: 1 });
-            const op = interpolate(frame, [start, start + 20], [0, 1], { extrapolateRight: "clamp" });
-            const lineW = interpolate(frame, [start + 20, start + 70], [0, 100], { extrapolateRight: "clamp" });
+        <div style={{ display: "flex", gap: 28, width: "100%", marginBottom: 72 }}>
+          {FEATURES.map((f, i) => {
+            const sc = spring({
+              fps,
+              frame: Math.max(0, frame - (40 + f.delay)),
+              config: { damping: 18, stiffness: 260, mass: 0.9 },
+              from: 0.88,
+              to: 1,
+            });
+            const op = interpolate(frame, [40 + f.delay, 58 + f.delay], [0, 1], { extrapolateRight: "clamp" });
+            const barW = interpolate(frame, [60 + f.delay, 120 + f.delay], [0, 100], { extrapolateRight: "clamp" });
 
             return (
               <div
@@ -110,22 +122,39 @@ export const FeaturesScene: React.FC = () => {
                 style={{
                   flex: 1,
                   background: "rgba(255,255,255,0.04)",
-                  border: `1px solid ${f.color}33`,
+                  border: "1px solid rgba(124,58,237,0.2)",
                   borderRadius: 20,
-                  padding: "36px 30px",
-                  transform: `scale(${sc})`,
+                  padding: "36px 28px",
+                  transform: `scale(${sc}) translateY(${interpolate(frame, [40 + f.delay, 58 + f.delay], [18, 0], { extrapolateRight: "clamp" })}px)`,
                   opacity: op,
                   fontFamily: FONT.sans,
-                  boxShadow: `0 0 60px ${f.color}0d`,
+                  position: "relative",
+                  overflow: "hidden",
                 }}
               >
-                <div style={{ fontSize: 44, marginBottom: 20 }}>{f.icon}</div>
+                {/* Icon box */}
+                <div
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: 16,
+                    background: f.grad,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 32,
+                    marginBottom: 20,
+                    boxShadow: `0 8px 24px rgba(124,58,237,0.35)`,
+                  }}
+                >
+                  {f.icon}
+                </div>
                 <div
                   style={{
                     fontSize: 20,
                     fontWeight: 800,
                     color: "#fff",
-                    marginBottom: 14,
+                    marginBottom: 10,
                     lineHeight: 1.2,
                   }}
                 >
@@ -135,19 +164,20 @@ export const FeaturesScene: React.FC = () => {
                   style={{
                     fontSize: 15,
                     color: "rgba(255,255,255,0.5)",
-                    lineHeight: 1.65,
+                    lineHeight: 1.6,
                     marginBottom: 24,
                   }}
                 >
                   {f.desc}
                 </div>
+                {/* Accent bottom bar */}
                 <div
                   style={{
-                    height: 2,
-                    borderRadius: 2,
-                    background: f.color,
-                    width: `${lineW}%`,
-                    opacity: 0.6,
+                    height: 3,
+                    borderRadius: 3,
+                    background: C.accent,
+                    width: `${barW}%`,
+                    opacity: 0.7,
                   }}
                 />
               </div>
@@ -155,18 +185,17 @@ export const FeaturesScene: React.FC = () => {
           })}
         </div>
 
-        {/* Counter row */}
+        {/* Stats row */}
         <div
           style={{
             display: "flex",
-            gap: 80,
-            opacity: interpolate(frame, [150, 180], [0, 1], { extrapolateRight: "clamp" }),
+            gap: 100,
+            opacity: statsOp,
           }}
         >
-          <CounterAnimation target={34} suffix="%" label="Hausse des conversions" startFrame={160} duration={120} color={C.accent} />
-          <CounterAnimation target={200} suffix="+" label="Boutiques actives" startFrame={180} duration={130} color="#34d399" />
-          <CounterAnimation target={98} suffix="%" label="Satisfaction clients" startFrame={200} duration={120} color={C.gold} />
-          <CounterAnimation target={24} suffix="/7" label="Disponibilité" startFrame={220} duration={60} color="#f472b6" />
+          <CounterAnimation target={35} prefix="+" suffix="%" label="de conversion" startFrame={210} duration={65} color={C.accent} />
+          <CounterAnimation target={24} suffix="/7" label="disponible" startFrame={225} duration={40} color="#34d399" />
+          <CounterAnimation target={48} suffix="h" label="de livraison" startFrame={240} duration={55} color={C.gold} />
         </div>
       </AbsoluteFill>
     </AbsoluteFill>

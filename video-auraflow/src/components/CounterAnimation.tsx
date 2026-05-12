@@ -18,20 +18,18 @@ export const CounterAnimation: React.FC<Props> = ({
   suffix = "",
   label,
   startFrame = 0,
-  duration = 90,
-  color = C.primary,
+  duration = 70,
+  color = C.accent,
 }) => {
   const frame = useCurrentFrame();
-  const localFrame = Math.max(0, frame - startFrame);
+  const local = Math.max(0, frame - startFrame);
 
   const value = Math.floor(
-    interpolate(localFrame, [0, duration], [0, target], {
-      extrapolateRight: "clamp",
-    })
+    interpolate(local, [0, duration], [0, target], { extrapolateRight: "clamp" })
   );
 
-  const opacity = interpolate(localFrame, [0, 20], [0, 1], { extrapolateRight: "clamp" });
-  const scale = interpolate(localFrame, [0, 20], [0.7, 1], { extrapolateRight: "clamp" });
+  const opacity = interpolate(local, [0, 18], [0, 1], { extrapolateRight: "clamp" });
+  const scale = interpolate(local, [0, 18], [0.75, 1], { extrapolateRight: "clamp" });
 
   return (
     <div
@@ -44,22 +42,24 @@ export const CounterAnimation: React.FC<Props> = ({
     >
       <div
         style={{
-          fontSize: 72,
-          fontWeight: 800,
-          color,
+          fontSize: 68,
+          fontWeight: 900,
           lineHeight: 1,
           letterSpacing: "-2px",
+          background: `linear-gradient(135deg, ${color}, #fff)`,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
         }}
       >
         {prefix}{value}{suffix}
       </div>
       <div
         style={{
-          fontSize: 17,
-          color: "rgba(255,255,255,0.55)",
+          fontSize: 15,
+          color: "rgba(255,255,255,0.45)",
           marginTop: 10,
-          fontWeight: 400,
-          letterSpacing: 0.5,
+          fontWeight: 500,
+          letterSpacing: 0.3,
         }}
       >
         {label}
