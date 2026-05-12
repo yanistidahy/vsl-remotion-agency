@@ -2,64 +2,95 @@ import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { C, FONT } from "../constants";
 
+const SPRING = { damping: 16, stiffness: 280, mass: 0.8 };
+const TRANS = 10;
+
 const PROBLEMS = [
   {
     icon: "😴",
     title: "Vous dormez,\nils partent",
-    desc: "60 % des achats sont abandonnés la nuit sans support disponible",
-    color: C.red,
+    stat: "60% abandons nocturnes",
+    desc: "60% des achats abandonnés la nuit",
+    color: "#ef4444",
     bg: "rgba(239,68,68,0.08)",
-    border: "rgba(239,68,68,0.25)",
-    accent: "#fca5a5",
+    border: "rgba(239,68,68,0.22)",
+    cardStart: 28,
   },
   {
     icon: "🔁",
-    title: "Questions\nrépétitives",
-    desc: "Votre équipe répond 50× par jour aux mêmes questions",
-    color: C.gold,
+    title: "Questions répétitives",
+    stat: "50× / jour en moyenne",
+    desc: "Votre équipe répond 50× / jour",
+    color: "#f59e0b",
     bg: "rgba(245,158,11,0.08)",
-    border: "rgba(245,158,11,0.25)",
-    accent: "#fcd34d",
+    border: "rgba(245,158,11,0.22)",
+    cardStart: 42,
   },
   {
     icon: "📉",
-    title: "Taux de\nconversion faible",
-    desc: "Seulement 2 % des visiteurs achètent sans aide personnalisée",
+    title: "Taux de conversion\nfaible",
+    stat: "2% sans assistance",
+    desc: "Seulement 2% achètent sans aide",
     color: "#f97316",
     bg: "rgba(249,115,22,0.08)",
-    border: "rgba(249,115,22,0.25)",
-    accent: "#fdba74",
+    border: "rgba(249,115,22,0.22)",
+    cardStart: 56,
   },
 ];
+
+const line1Words = "Votre boutique".split(" ");
+const line2Words = "perd des ventes chaque nuit".split(" ");
 
 export const ProblemScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
-  // Slide IN from right edge
-  const slideX = interpolate(frame, [0, 22], [1920, 0], { extrapolateRight: "clamp" });
-  const fadeIn = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
-  // Slide OUT to left
-  const slideOutX = interpolate(frame, [durationInFrames - 22, durationInFrames], [0, -1920], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const fadeOut = interpolate(frame, [durationInFrames - 22, durationInFrames], [1, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  // Slide IN from right
+  const slideIn = interpolate(frame, [0, TRANS], [1920, 0], { extrapolateRight: "clamp" });
+  const slideOut = interpolate(
+    frame,
+    [durationInFrames - TRANS, durationInFrames],
+    [0, -1920],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+  const fadeOut = interpolate(
+    frame,
+    [durationInFrames - TRANS, durationInFrames],
+    [1, 0],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
 
-  const titleY = spring({ fps, frame, config: { damping: 18, stiffness: 260, mass: 0.9 }, from: 30, to: 0 });
-  const titleOp = interpolate(frame, [0, 20], [0, 1], { extrapolateRight: "clamp" });
+  const isOut = frame >= durationInFrames - TRANS;
+
+  // "LE PROBLÈME" label slams in with spring overshoot
+  const labelScale = spring({ fps, frame, config: SPRING, from: 0.85, to: 1 });
+  const labelX = spring({ fps, frame, config: SPRING, from: -40, to: 0 });
+  const labelOp = interpolate(frame, [0, TRANS], [0, 1], { extrapolateRight: "clamp" });
 
   return (
     <AbsoluteFill
       style={{
-        background: `radial-gradient(ellipse 110% 80% at 50% 0%, #1a0520 0%, ${C.dark} 65%)`,
-        transform: `translateX(${frame < durationInFrames - 22 ? slideX : slideOutX}px)`,
-        opacity: Math.min(fadeIn, fadeOut),
+        background: `radial-gradient(ellipse 110% 70% at 50% 0%, #2a0a0a 0%, #0a0a0f 60%)`,
+        transform: `translateX(${isOut ? slideOut : slideIn}px)`,
+        opacity: fadeOut,
       }}
     >
+      {/* Red radial glow top-center */}
+      <div
+        style={{
+          position: "absolute",
+          top: "-10%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 900,
+          height: 500,
+          borderRadius: "50%",
+          background: "radial-gradient(ellipse, rgba(239,68,68,0.12) 0%, transparent 70%)",
+          filter: "blur(40px)",
+          pointerEvents: "none",
+        }}
+      />
+
       <AbsoluteFill
         style={{
           display: "flex",
@@ -70,55 +101,117 @@ export const ProblemScene: React.FC = () => {
         }}
       >
         {/* Header */}
-        <div
-          style={{
-            opacity: titleOp,
-            transform: `translateY(${titleY}px)`,
-            textAlign: "center",
-            marginBottom: 56,
-          }}
-        >
+        <div style={{ textAlign: "center", marginBottom: 52 }}>
+          {/* LE PROBLÈME label slams in */}
           <div
             style={{
+              opacity: labelOp,
+              transform: `translateX(${labelX}px) scale(${labelScale})`,
               fontSize: 13,
-              color: C.red,
+              color: "#ef4444",
               fontWeight: 700,
-              letterSpacing: "0.22em",
+              letterSpacing: "0.26em",
               textTransform: "uppercase",
-              marginBottom: 14,
+              marginBottom: 18,
               fontFamily: FONT.sans,
             }}
           >
-            Le problème
+            LE PROBLÈME
           </div>
-          <div
-            style={{
-              fontSize: 52,
-              fontWeight: 900,
-              color: "#fff",
-              fontFamily: FONT.sans,
-              letterSpacing: "-1.5px",
-              lineHeight: 1.1,
-            }}
-          >
-            Votre boutique perd des ventes{" "}
-            <span style={{ color: C.red }}>chaque nuit</span>
+
+          {/* Headline word-by-word (2 lines) */}
+          <div style={{ lineHeight: 1.1, letterSpacing: "-1.5px" }}>
+            {/* Line 1: "Votre boutique" */}
+            <div style={{ display: "flex", justifyContent: "center", gap: 14, marginBottom: 4 }}>
+              {line1Words.map((word, i) => {
+                const wStart = 10 + i * 5;
+                const wOp = interpolate(frame, [wStart, wStart + 12], [0, 1], {
+                  extrapolateRight: "clamp",
+                });
+                const wY = spring({
+                  fps,
+                  frame: Math.max(0, frame - wStart),
+                  config: SPRING,
+                  from: 24,
+                  to: 0,
+                });
+                return (
+                  <span
+                    key={i}
+                    style={{
+                      opacity: wOp,
+                      transform: `translateY(${wY}px)`,
+                      display: "inline-block",
+                      fontSize: 56,
+                      fontWeight: 900,
+                      color: "#fff",
+                      fontFamily: FONT.sans,
+                    }}
+                  >
+                    {word}
+                  </span>
+                );
+              })}
+            </div>
+            {/* Line 2: "perd des ventes chaque nuit" */}
+            <div
+              style={{ display: "flex", justifyContent: "center", gap: 14, flexWrap: "wrap" }}
+            >
+              {line2Words.map((word, i) => {
+                const wStart = 12 + (line1Words.length + i) * 5;
+                const wOp = interpolate(frame, [wStart, wStart + 12], [0, 1], {
+                  extrapolateRight: "clamp",
+                });
+                const wY = spring({
+                  fps,
+                  frame: Math.max(0, frame - wStart),
+                  config: SPRING,
+                  from: 24,
+                  to: 0,
+                });
+                const isNuit = word === "nuit";
+                return (
+                  <span
+                    key={i}
+                    style={{
+                      opacity: wOp,
+                      transform: `translateY(${wY}px)`,
+                      display: "inline-block",
+                      fontSize: 56,
+                      fontWeight: 900,
+                      color: isNuit ? "#ef4444" : "#fff",
+                      fontFamily: FONT.sans,
+                    }}
+                  >
+                    {word}
+                  </span>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        {/* 3 problem cards */}
+        {/* 3 Problem cards */}
         <div style={{ display: "flex", gap: 28, width: "100%" }}>
           {PROBLEMS.map((p, i) => {
-            const delay = i * 22;
+            const cs = p.cardStart;
             const sc = spring({
               fps,
-              frame: Math.max(0, frame - (30 + delay)),
-              config: { damping: 18, stiffness: 260, mass: 0.9 },
-              from: 0.88,
+              frame: Math.max(0, frame - cs),
+              config: SPRING,
+              from: 0.9,
               to: 1,
             });
-            const op = interpolate(frame, [30 + delay, 48 + delay], [0, 1], { extrapolateRight: "clamp" });
-            const barW = interpolate(frame, [55 + delay, 110 + delay], [0, 100], { extrapolateRight: "clamp" });
+            const op = interpolate(frame, [cs, cs + 14], [0, 1], { extrapolateRight: "clamp" });
+            const cardY = interpolate(frame, [cs, cs + 14], [30, 0], {
+              extrapolateRight: "clamp",
+            });
+            const barW = interpolate(frame, [cs + 20, cs + 70], [0, 100], {
+              extrapolateRight: "clamp",
+            });
+            const statOp = interpolate(frame, [cs + 30, cs + 55], [0, 1], {
+              extrapolateRight: "clamp",
+            });
 
             return (
               <div
@@ -129,19 +222,21 @@ export const ProblemScene: React.FC = () => {
                   border: `1px solid ${p.border}`,
                   borderRadius: 20,
                   padding: "36px 30px",
-                  transform: `scale(${sc}) translateY(${interpolate(frame, [30+delay, 48+delay], [20, 0], { extrapolateRight: "clamp" })}px)`,
+                  transform: `scale(${sc}) translateY(${cardY}px)`,
                   opacity: op,
                   fontFamily: FONT.sans,
-                  boxShadow: `0 0 60px ${p.color}0d`,
+                  boxShadow: `0 0 60px ${p.color}14`,
+                  position: "relative",
+                  overflow: "hidden",
                 }}
               >
-                <div style={{ fontSize: 52, marginBottom: 20 }}>{p.icon}</div>
+                <div style={{ fontSize: 52, marginBottom: 18 }}>{p.icon}</div>
                 <div
                   style={{
                     fontSize: 22,
                     fontWeight: 900,
                     color: "#fff",
-                    marginBottom: 14,
+                    marginBottom: 12,
                     lineHeight: 1.25,
                     whiteSpace: "pre-line",
                   }}
@@ -151,35 +246,36 @@ export const ProblemScene: React.FC = () => {
                 <div
                   style={{
                     fontSize: 15,
-                    color: "rgba(255,255,255,0.5)",
+                    color: "rgba(255,255,255,0.48)",
                     lineHeight: 1.65,
                     marginBottom: 28,
                   }}
                 >
                   {p.desc}
                 </div>
-                {/* Animated color bar */}
+                {/* Animated bottom bar */}
                 <div
                   style={{
                     height: 3,
                     borderRadius: 3,
                     background: p.color,
                     width: `${barW}%`,
-                    opacity: 0.7,
+                    opacity: 0.75,
                   }}
                 />
-                {/* Accent number */}
+                {/* Animated stat */}
                 <div
                   style={{
-                    marginTop: 20,
+                    marginTop: 18,
                     fontSize: 11,
-                    color: p.accent,
-                    fontWeight: 600,
-                    letterSpacing: 1,
-                    opacity: interpolate(frame, [80+delay, 110+delay], [0, 1], { extrapolateRight: "clamp" }),
+                    color: p.color,
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                    opacity: statOp,
+                    textTransform: "uppercase",
                   }}
                 >
-                  {i === 0 ? "60% abandons nocturnes" : i === 1 ? "50× / jour en moyenne" : "2% sans assistance"}
+                  {p.stat}
                 </div>
               </div>
             );

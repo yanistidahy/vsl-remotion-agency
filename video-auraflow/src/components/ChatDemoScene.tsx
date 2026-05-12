@@ -1,10 +1,19 @@
 import React from "react";
 import {
-  AbsoluteFill, Audio, interpolate, staticFile, spring, useCurrentFrame, useVideoConfig,
+  AbsoluteFill,
+  Audio,
+  interpolate,
+  staticFile,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
 } from "remotion";
 import { C, FONT } from "../constants";
 import { ChatWidget } from "./ChatWidget";
 import { KeyboardTyping } from "./KeyboardTyping";
+
+const SPRING = { damping: 16, stiffness: 280, mass: 0.8 };
+const TRANS = 10;
 
 const TYPING_TEXT = "j'ai les cheveux secs et frisés";
 const FPC = 4;
@@ -13,17 +22,46 @@ const CHARS = TYPING_TEXT.length; // 31
 const BOT_MSG1_START = 30;
 const USER_TYPE_START = 90;
 const USER_TYPE_END = USER_TYPE_START + CHARS * FPC; // 214
-const USER_SEND = USER_TYPE_END + 4;                  // 218
-const BOT_TYPING_START = USER_SEND + 10;              // 228
+const USER_SEND = USER_TYPE_END + 4; // 218
+const BOT_TYPING_START = USER_SEND + 10; // 228
 const BOT_MSG2_START = 242;
 const PRODUCT_START = 340;
-const KEYBOARD_HIDE = USER_SEND + 18;                 // 236
+const KEYBOARD_HIDE = USER_SEND + 18; // 236
 
 const AZERTY_MAP: Record<string, string> = {
-  a:"A",z:"Z",e:"E",r:"R",t:"T",y:"Y",u:"U",i:"I",o:"O",p:"P",
-  q:"Q",s:"S",d:"D",f:"F",g:"G",h:"H",j:"J",k:"K",l:"L",m:"M",
-  w:"W",x:"X",c:"C",v:"V",b:"B",n:"N",
-  é:"E",è:"E",à:"A",ù:"U",ç:"C"," ":"SPACE","'":"APOS",
+  a: "A",
+  z: "Z",
+  e: "E",
+  r: "R",
+  t: "T",
+  y: "Y",
+  u: "U",
+  i: "I",
+  o: "O",
+  p: "P",
+  q: "Q",
+  s: "S",
+  d: "D",
+  f: "F",
+  g: "G",
+  h: "H",
+  j: "J",
+  k: "K",
+  l: "L",
+  m: "M",
+  w: "W",
+  x: "X",
+  c: "C",
+  v: "V",
+  b: "B",
+  n: "N",
+  é: "E",
+  è: "E",
+  à: "A",
+  ù: "U",
+  ç: "C",
+  " ": "SPACE",
+  "'": "APOS",
 };
 
 export const ChatDemoScene: React.FC = () => {
@@ -31,29 +69,47 @@ export const ChatDemoScene: React.FC = () => {
   const { fps, durationInFrames } = useVideoConfig();
 
   // Slide IN from right
-  const slideIn = interpolate(frame, [0, 22], [1920, 0], { extrapolateRight: "clamp" });
-  const fadeIn = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
+  const slideIn = interpolate(frame, [0, TRANS], [1920, 0], { extrapolateRight: "clamp" });
+  const fadeIn = interpolate(frame, [0, TRANS], [0, 1], { extrapolateRight: "clamp" });
   // Slide OUT left
-  const slideOut = interpolate(frame, [durationInFrames - 22, durationInFrames], [0, -1920], {
-    extrapolateLeft: "clamp", extrapolateRight: "clamp",
-  });
-  const fadeOut = interpolate(frame, [durationInFrames - 22, durationInFrames], [1, 0], {
-    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  const slideOut = interpolate(
+    frame,
+    [durationInFrames - TRANS, durationInFrames],
+    [0, -1920],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+  const fadeOut = interpolate(
+    frame,
+    [durationInFrames - TRANS, durationInFrames],
+    [1, 0],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+
+  // Left panel entrance
+  const panelOp = interpolate(frame, [12, 28], [0, 1], { extrapolateRight: "clamp" });
+  const panelX = spring({
+    fps,
+    frame: Math.max(0, frame - 12),
+    config: SPRING,
+    from: -50,
+    to: 0,
   });
 
-  const panelOp = interpolate(frame, [15, 35], [0, 1], { extrapolateRight: "clamp" });
-  const panelX = spring({ fps, frame: Math.max(0, frame - 15), config: { damping: 18, stiffness: 260, mass: 0.9 }, from: -40, to: 0 });
+  // Headline words animate in one-by-one
+  const headlineWords = ["Un", "conseiller", "IA", "qui", "vend"];
+  const headlineStart = 16;
 
   const steps = [
-    { icon: "👋", label: "Accueil personnalisé",      trigger: BOT_MSG1_START },
-    { icon: "⌨️", label: "Analyse du besoin client",  trigger: USER_TYPE_START },
-    { icon: "🎯", label: "Recommandation ciblée",     trigger: BOT_MSG2_START },
-    { icon: "🛒", label: "Produit + achat direct",    trigger: PRODUCT_START },
+    { icon: "👋", label: "Accueil personnalisé", trigger: BOT_MSG1_START },
+    { icon: "⌨️", label: "Analyse du besoin client", trigger: USER_TYPE_START },
+    { icon: "🎯", label: "Recommandation ciblée", trigger: BOT_MSG2_START },
+    { icon: "🛒", label: "Produit + achat direct", trigger: PRODUCT_START },
   ];
 
   const charCount = Math.floor(
     interpolate(frame, [USER_TYPE_START, USER_TYPE_END], [0, CHARS], {
-      extrapolateLeft: "clamp", extrapolateRight: "clamp",
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
     })
   );
   const inputText = frame >= USER_SEND ? "" : TYPING_TEXT.slice(0, charCount);
@@ -76,7 +132,11 @@ export const ChatDemoScene: React.FC = () => {
 
   const messages: Array<{ role: "user" | "bot"; text: string; frame: number }> = [];
   if (frame >= BOT_MSG1_START)
-    messages.push({ role: "bot", text: "Bonjour ! Quel soin recherchez-vous ? 👋", frame: BOT_MSG1_START });
+    messages.push({
+      role: "bot",
+      text: "Bonjour ! Quel soin recherchez-vous ? 👋",
+      frame: BOT_MSG1_START,
+    });
   if (frame >= USER_SEND)
     messages.push({ role: "user", text: TYPING_TEXT, frame: USER_SEND });
   if (frame >= BOT_MSG2_START)
@@ -102,11 +162,40 @@ export const ChatDemoScene: React.FC = () => {
     <AbsoluteFill
       style={{
         background: `radial-gradient(ellipse 80% 70% at 25% 50%, #0e0520 0%, ${C.dark} 60%)`,
-        transform: `translateX(${frame < durationInFrames - 22 ? slideIn : slideOut}px)`,
+        transform: `translateX(${frame < durationInFrames - TRANS ? slideIn : slideOut}px)`,
         opacity: Math.min(fadeIn, fadeOut),
       }}
     >
       {audios}
+
+      {/* Blurred purple orb behind chat widget area */}
+      <div
+        style={{
+          position: "absolute",
+          right: "18%",
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: 600,
+          height: 600,
+          borderRadius: "50%",
+          background: "radial-gradient(ellipse, rgba(124,58,237,0.08) 0%, transparent 72%)",
+          filter: "blur(60px)",
+          pointerEvents: "none",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          right: "24%",
+          top: "20%",
+          width: 300,
+          height: 300,
+          borderRadius: "50%",
+          background: "radial-gradient(ellipse, rgba(79,70,229,0.07) 0%, transparent 72%)",
+          filter: "blur(40px)",
+          pointerEvents: "none",
+        }}
+      />
 
       {/* LEFT PANEL */}
       <div
@@ -120,6 +209,7 @@ export const ChatDemoScene: React.FC = () => {
           fontFamily: FONT.sans,
         }}
       >
+        {/* "DÉMO EN DIRECT" label */}
         <div
           style={{
             fontSize: 13,
@@ -130,8 +220,10 @@ export const ChatDemoScene: React.FC = () => {
             marginBottom: 20,
           }}
         >
-          Démo en direct
+          DÉMO EN DIRECT
         </div>
+
+        {/* Big headline word-by-word */}
         <div
           style={{
             fontSize: 44,
@@ -140,18 +232,44 @@ export const ChatDemoScene: React.FC = () => {
             lineHeight: 1.12,
             letterSpacing: "-1.2px",
             marginBottom: 44,
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "0 10px",
           }}
         >
-          Un conseiller IA{" "}
-          <span
-            style={{
-              background: `linear-gradient(90deg, ${C.accent}, #c4b5fd)`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            qui vend
-          </span>
+          {headlineWords.map((word, i) => {
+            const wStart = headlineStart + i * 4;
+            const wOp = interpolate(frame, [wStart, wStart + 10], [0, 1], {
+              extrapolateRight: "clamp",
+              extrapolateLeft: "clamp",
+            });
+            const wY = spring({
+              fps,
+              frame: Math.max(0, frame - wStart),
+              config: SPRING,
+              from: 18,
+              to: 0,
+            });
+            const isVend = word === "vend";
+            return (
+              <span
+                key={i}
+                style={{
+                  opacity: wOp,
+                  transform: `translateY(${wY}px)`,
+                  display: "inline-block",
+                  background: isVend
+                    ? `linear-gradient(90deg, ${C.accent}, #c4b5fd)`
+                    : undefined,
+                  WebkitBackgroundClip: isVend ? "text" : undefined,
+                  WebkitTextFillColor: isVend ? "transparent" : undefined,
+                  color: isVend ? undefined : "#fff",
+                }}
+              >
+                {word}
+              </span>
+            );
+          })}
         </div>
 
         {/* Step indicators */}
@@ -159,10 +277,24 @@ export const ChatDemoScene: React.FC = () => {
           {steps.map((s, i) => {
             const active = frame >= s.trigger;
             const dotScale = active
-              ? spring({ fps, frame: Math.max(0, frame - s.trigger), config: { damping: 14, stiffness: 300, mass: 0.6 }, from: 0.6, to: 1 })
+              ? spring({
+                  fps,
+                  frame: Math.max(0, frame - s.trigger),
+                  config: { damping: 14, stiffness: 300, mass: 0.6 },
+                  from: 0.6,
+                  to: 1,
+                })
               : 1;
             return (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, opacity: active ? 1 : 0.3 }}>
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                  opacity: active ? 1 : 0.3,
+                }}
+              >
                 <div
                   style={{
                     width: 10,
@@ -181,13 +313,30 @@ export const ChatDemoScene: React.FC = () => {
                     fontWeight: active ? 600 : 400,
                   }}
                 >
-                  {s.icon}{"  "}{s.label}
+                  {s.icon}{"  "}
+                  {s.label}
                 </span>
               </div>
             );
           })}
         </div>
       </div>
+
+      {/* Chat widget glowing halo */}
+      <div
+        style={{
+          position: "absolute",
+          right: "14%",
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: 460,
+          height: 560,
+          borderRadius: 24,
+          background: "rgba(124,58,237,0.08)",
+          filter: "blur(30px)",
+          pointerEvents: "none",
+        }}
+      />
 
       {/* CHAT WIDGET */}
       <ChatWidget
