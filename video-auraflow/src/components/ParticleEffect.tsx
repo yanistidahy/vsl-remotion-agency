@@ -26,8 +26,8 @@ export const ParticleEffect: React.FC<Props> = ({
     const currentY = startY - Math.max(0, frame - delay) * spd;
     const opacity = interpolate(
       currentY,
-      [1080, 600, 100, -100],
-      [0, 0.55, 0.25, 0],
+      [-100, 100, 600, 1080],
+      [0, 0.25, 0.55, 0],
       { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
     );
 
