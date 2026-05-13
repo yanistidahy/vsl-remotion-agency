@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" width="120" height="80">
+  <defs>
+    <linearGradient id="aGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4FC3F7"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <!-- A lettermark -->
+  <polygon points="40,10 20,65 30,65 40,38 50,65 60,65" fill="url(#aGrad)"/>
+  <line x1="28" y1="48" x2="52" y2="48" stroke="url(#aGrad)" stroke-width="4"/>
+  <!-- Wave swoosh -->
+  <path d="M15,68 Q30,58 45,65 Q60,72 75,60 Q85,52 95,55" stroke="url(#waveGrad)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <!-- Wordmark -->
+  <text x="68" y="45" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="800" fill="white" letter-spacing="1">AURA FLOW AI</text>
+</svg>

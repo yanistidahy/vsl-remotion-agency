@@ -25,3 +25,15 @@ export const TOTAL_FRAMES = 3000;
 export const SPRING_SNAP = { damping: 18, stiffness: 260, mass: 0.9 };
 export const SPRING_MEDIUM = { damping: 20, stiffness: 280, mass: 0.85 };
 export const SPRING_SOFT = { damping: 22, stiffness: 240, mass: 1 };
+
+// Ad composition constants (RETROGRADATION style)
+export const CAd = {
+  bg: '#080808',
+  white: '#FFFFFF',
+  purple: '#7c3aed',
+  purpleLight: '#a78bfa',
+  purpleDim: 'rgba(124,58,237,0.15)',
+  gray: '#888888',
+};
+export const SP_SNAP = { damping: 14, stiffness: 450, mass: 0.6 };
+export const SP_SMOOTH = { damping: 16, stiffness: 280, mass: 0.8 };
